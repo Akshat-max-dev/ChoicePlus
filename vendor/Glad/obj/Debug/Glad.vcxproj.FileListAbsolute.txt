@@ -1,0 +1,2 @@
+E:\Choice+\vendor\Glad\bin\Debug\Glad.pdb
+E:\Choice+\vendor\Glad\obj\Debug\Glad.pdb
