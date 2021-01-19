@@ -16,12 +16,17 @@ project "Core"
 
     includedirs
     {
-        "src"
+        "src",
+        "%{Dependency.GLFW}",
+        "%{Dependency.Glad}",
+        "%{Dependency.ImGui}"
     }
 
     links
     {
-        "Renderer"
+        "GLFW",
+        "Glad",
+        "ImGui"
     }
 
     defines

@@ -15,13 +15,22 @@ project "Choice+"
 
     includedirs
     {
-        "src"
+        "src",
+        "%{wks.location}/Core",
+        "%{Dependency.GLFW}",
+        "%{Dependency.Glad}",
+        "%{Dependency.ImGui}"
+    }
+
+    defines
+    {
+        "GLFW_INCLUDE_NONE"
     }
 
     links
     {
         "Core",
-        "Renderer"
+        "ImGui"
     }
 
     filter "system:windows"
