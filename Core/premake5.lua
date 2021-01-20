@@ -16,6 +16,8 @@ project "Core"
 
     includedirs
     {
+        "%{wks.location}/Core",
+        "%{wks.location}/Choice+/src",
         "src",
         "%{Dependency.GLFW}",
         "%{Dependency.Glad}",
