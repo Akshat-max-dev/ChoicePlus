@@ -16,7 +16,18 @@ project "Renderer"
 
     includedirs
     {
-        "src"
+        "src",
+        "%{wks.location}/Core",
+        "%{wks.location}/Choice+/src",
+        "%{Dependency.Glad}",
+        "%{Dependency.glm}",
+        "%{Dependency.ImGui}"
+    }
+
+    links
+    {
+        "Glad",
+        "ImGui"
     }
 
     filter "system:windows"

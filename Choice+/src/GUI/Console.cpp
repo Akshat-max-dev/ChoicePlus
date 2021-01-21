@@ -68,17 +68,17 @@ namespace ChoicePlus
 			bool has_color = false;
 			if (strstr(item, "{e}")) 
 			{ 
-				color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f); 
+				color = ImVec4(1.0f, 0.0f, 0.0f, 1.0f); 
 				has_color = true; 
 			}
 			else if (strstr(item, "{w}")) 
 			{ 
-				color = ImVec4(1.0f, 0.8f, 0.2f, 1.0f); 
+				color = ImVec4(1.0f, 1.0f, 0.0f, 1.0f); 
 				has_color = true; 
 			}
 			else if (strstr(item, "{i}"))
 			{
-				color = ImVec4(0.4f, 1.0f, 0.3f, 1.0f);
+				color = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
 				has_color = true;
 			}
 			if (has_color)

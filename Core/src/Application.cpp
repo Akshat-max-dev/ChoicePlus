@@ -9,6 +9,12 @@
 #include<backends/imgui_impl_opengl3.h>
 #include<backends/imgui_impl_glfw.h>
 
+#ifdef DEBUG
+#include"Debug.h"
+#endif
+
+#include"OpenGL/Shader.h"
+
 namespace ChoicePlus
 {
 	Application* Application::sInstance = nullptr;
@@ -16,6 +22,9 @@ namespace ChoicePlus
 	{
 		sInstance = this;
 		GUI_Init();
+#ifdef DEBUG
+		EnableOpenGLDebugging();
+#endif
 	}
 
 	Application::~Application()
@@ -53,7 +62,7 @@ namespace ChoicePlus
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-		io.FontDefault = io.Fonts->AddFontFromFileTTF("E:/Choice+/Choice+/assets/fonts/Roboto-Regular.ttf", 16.0f);
+		io.FontDefault = io.Fonts->AddFontFromFileTTF("E:/Choice+/Choice+/assets/fonts/Roboto-Regular.ttf", 18.0f);
 
 		ImGui::StyleColorsDark();
 
