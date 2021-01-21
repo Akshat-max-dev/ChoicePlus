@@ -7,5 +7,6 @@
 #include<sstream>
 #include<map>
 #include<stdint.h>
+#include<optional>
 
 #include"src/Choice+Assert.h"

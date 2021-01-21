@@ -8,7 +8,7 @@ namespace ChoicePlus
 	{
 		if (t == "vertex")return GL_VERTEX_SHADER;
 		else if (t == "fragment")return GL_FRAGMENT_SHADER;
-		else cpassert(0);
+		else cpassert(0); return GL_NONE;
 	}
 
 	Shader::Shader(const std::string& shader)

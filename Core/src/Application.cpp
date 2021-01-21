@@ -13,8 +13,6 @@
 #include"Debug.h"
 #endif
 
-#include"OpenGL/Shader.h"
-
 namespace ChoicePlus
 {
 	Application* Application::sInstance = nullptr;
