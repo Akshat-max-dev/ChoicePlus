@@ -8,5 +8,6 @@
 #include<map>
 #include<stdint.h>
 #include<optional>
+#include<filesystem>
 
 #include"src/Choice+Assert.h"

@@ -2,6 +2,8 @@
 
 #include"src/Log.h"
 
+#include<glm/gtc/type_ptr.hpp>
+
 namespace ChoicePlus
 {
 	static GLenum GetTypeFromString(const std::string& t)
@@ -14,7 +16,50 @@ namespace ChoicePlus
 	Shader::Shader(const std::string& shader)
 	{
 		auto sources = ReadShader(shader);
+		mShaderFilename = std::filesystem::path(shader).stem().string();
 		CompileShader(sources);
+	}
+
+	void Shader::Int(const std::string& name, int value)
+	{
+		int location = glGetUniformLocation(mRendererId, name.c_str());
+		glUniform1i(location, value);
+	}
+
+	void Shader::Float(const std::string& name, float value)
+	{
+		int location = glGetUniformLocation(mRendererId, name.c_str());
+		glUniform1f(location, value);
+	}
+
+	void Shader::Float2(const std::string& name, const glm::vec2& value)
+	{
+		int location = glGetUniformLocation(mRendererId, name.c_str());
+		glUniform2f(location, value.x, value.y);
+	}
+
+	void Shader::Float3(const std::string& name, const glm::vec3& value)
+	{
+		int location = glGetUniformLocation(mRendererId, name.c_str());
+		glUniform3f(location, value.x, value.y, value.z);
+	}
+
+	void Shader::Float4(const std::string& name, const glm::vec4& value)
+	{
+		int location = glGetUniformLocation(mRendererId, name.c_str());
+		glUniform4f(location, value.x, value.y, value.z, value.w);
+	}
+
+	void Shader::Mat3(const std::string& name, const glm::mat3& value)
+	{
+		int location = glGetUniformLocation(mRendererId, name.c_str());
+		glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
+	}
+
+	void Shader::Mat4(const std::string& name, const glm::mat4& value)
+	{
+		int location = glGetUniformLocation(mRendererId, name.c_str());
+		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 
 	const std::map<GLenum, std::string> Shader::ReadShader(const std::string& fromFile)
@@ -74,10 +119,11 @@ namespace ChoicePlus
 
 				glDeleteShader(Id);
 
-				std::string msg = infoLog.data();
+				std::string msg = "Failed To Compile " + mShaderFilename;
+				msg += " ";
+				msg += infoLog.data();
 				msg.append("{w}");
 				CONSOLE(msg.c_str());
-				CONSOLE("Shader Compilation Failed{e}");
 				return;
 			}
 
