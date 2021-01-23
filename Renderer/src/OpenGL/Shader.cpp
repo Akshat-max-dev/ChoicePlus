@@ -42,7 +42,7 @@ namespace ChoicePlus
 			else
 			{
 				auto it = sources.find(reading_current);
-				line += "\n";
+				line.append("\n");
 				it->second += line;
 			}
 		}
@@ -52,24 +52,24 @@ namespace ChoicePlus
 
 	void Shader::CompileShader(const std::map<GLenum, std::string>& data)
 	{
-		GLuint program = glCreateProgram();
-		std::vector<GLuint> shaderIds(data.size());
+		uint32_t program = glCreateProgram();
+		std::vector<uint32_t> shaderIds(data.size());
 		int shadercount = 0;
 		for (auto& shader : data)
 		{
-			GLuint Id = glCreateShader(shader.first);
+			uint32_t Id = glCreateShader(shader.first);
 			const char* src = shader.second.c_str();
 			glShaderSource(Id, 1, &src, 0);
 			glCompileShader(Id);
 			
-			GLint isCompiled;
+			int isCompiled;
 			glGetShaderiv(Id, GL_COMPILE_STATUS, &isCompiled);
 			if (isCompiled == GL_FALSE)
 			{
-				GLint maxLength = 0;
+				int maxLength = 0;
 				glGetShaderiv(Id, GL_INFO_LOG_LENGTH, &maxLength);
 
-				std::vector<GLchar> infoLog(maxLength);
+				std::vector<char> infoLog(maxLength);
 				glGetShaderInfoLog(Id, maxLength, &maxLength, &infoLog[0]);
 
 				glDeleteShader(Id);
@@ -77,8 +77,8 @@ namespace ChoicePlus
 				std::string msg = infoLog.data();
 				msg.append("{w}");
 				CONSOLE(msg.c_str());
-				CONSOLE("Shader Compilation Failed");
-				cpassert(0);
+				CONSOLE("Shader Compilation Failed{e}");
+				return;
 			}
 
 			glAttachShader(program, Id);
@@ -90,14 +90,14 @@ namespace ChoicePlus
 
 		glLinkProgram(mRendererId);
 
-		GLint isLinked;
+		int isLinked;
 		glGetProgramiv(mRendererId, GL_LINK_STATUS, &isLinked);
 		if (isLinked == GL_FALSE)
 		{
-			GLint maxLength = 0;
+			int maxLength = 0;
 			glGetProgramiv(mRendererId, GL_INFO_LOG_LENGTH, &maxLength);
 
-			std::vector<GLchar> infoLog(maxLength);
+			std::vector<char> infoLog(maxLength);
 			glGetProgramInfoLog(mRendererId, maxLength, &maxLength, &infoLog[0]);
 
 			glDeleteProgram(mRendererId);

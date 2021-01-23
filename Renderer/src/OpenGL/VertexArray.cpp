@@ -35,7 +35,7 @@ namespace ChoicePlus
 		GLsizei strides = 0;
 		for (auto c : layout)
 		{
-			if (int(c) >= 48 && int(c) <= 57)
+			if (int(c) >= 49 && int(c) <= 57)
 			{
 				Counts.push_back(int(c) - 48);
 				strides += (int(c) - 48) * sizeof(float);

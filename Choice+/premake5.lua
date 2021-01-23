@@ -18,9 +18,11 @@ project "Choice+"
     {
         "src",
         "%{wks.location}/Core",
+        "%{wks.location}/Renderer/src",
         "%{Dependency.GLFW}",
         "%{Dependency.Glad}",
-        "%{Dependency.ImGui}"
+        "%{Dependency.ImGui}",
+        "%{Dependency.glm}"
     }
 
     defines
@@ -31,7 +33,8 @@ project "Choice+"
     links
     {
         "Core",
-        "ImGui"
+        "ImGui",
+        "Renderer"
     }
 
     filter "system:windows"

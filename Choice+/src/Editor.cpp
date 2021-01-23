@@ -6,10 +6,13 @@ namespace ChoicePlus
 {
 	Editor::Editor()
 	{
+		mPipeline->Init();
+		mActiveScene = new Scene("Choice+");
 	}
 
 	Editor::~Editor()
 	{
+		delete mActiveScene;
 	}
 
 	void Editor::Draw()
@@ -61,6 +64,19 @@ namespace ChoicePlus
 
 		static bool show = true;
 		ImGui::ShowDemoWindow(&show);
+
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+		ImGui::Begin("Viewport");
+
+		//ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+		//if (m_ViewportSize != *(glm::vec2*)&viewportSize)
+		//{
+			//m_ViewportSize.x = viewportSize.x;
+			//m_ViewportSize.y = viewportSize.y;
+		//}
+
+		ImGui::End();
+		ImGui::PopStyleVar();
 
 		mConsole->Draw();
 

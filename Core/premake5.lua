@@ -11,10 +11,7 @@ project "Core"
 	{
 		"**.h",
 		"src/**.h",
-		"src/**.cpp",
-
-		"%{wks.location}/vendor/glm/**.hpp",
-		"%{wks.location}/vendor/glm/**.inl"
+		"src/**.cpp"
 	}
 
 	includedirs
@@ -26,7 +23,13 @@ project "Core"
 		"%{Dependency.GLFW}",
 		"%{Dependency.Glad}",
 		"%{Dependency.ImGui}",
-		"%{Dependency.glm}"
+		"%{Dependency.glm}",
+		"%{Dependency.assimp}"
+	}
+
+	libdirs
+	{
+		"%{wks.location}/vendor/assimp/bin"
 	}
 
 	links
@@ -34,7 +37,8 @@ project "Core"
 		"GLFW",
 		"Glad",
 		"ImGui",
-		"Renderer"
+		"Renderer",
+		"assimp.lib"
 	}
 
 	defines

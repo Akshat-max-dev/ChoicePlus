@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CONSOLE_H_
+#define CONSOLE_H_
 #include"c+pch.h"
 
 #include<imgui.h>
@@ -27,3 +29,4 @@ namespace ChoicePlus
 		ImGuiWindowFlags mFlags = ImGuiWindowFlags_NoNavInputs;
 	};
 }
+#endif
