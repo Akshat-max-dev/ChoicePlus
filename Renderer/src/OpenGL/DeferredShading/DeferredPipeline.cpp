@@ -19,10 +19,33 @@ namespace ChoicePlus
 		mLightingPass.first->Visible(w, h);
 	}
 
-	void DeferredPipeline::Draw(const Scene* scene)
+	void DeferredPipeline::Update(Scene* with, std::pair<glm::mat4, glm::vec3>& to)
 	{
-		//TODO Render To Geometry Pass
-		Pipeline::Draw(scene);
+		Pipeline::Update(with, to);
+		for (auto &object : with->GetSceneObjects())
+		{
+			mGeometryPass.first->Bind();
+			auto model = object.GetProperty<Model>();
+			if (model.has_value())
+			{
+				mGeometryPass.second->Bind();
+				for (auto& mesh : model.value().GetMeshes())
+				{
+					mGeometryPass.second->Mat4("uViewProjection", to.first);
+					mGeometryPass.second->Mat4("uTransform", glm::mat4(1.0f));
+					mesh.first->Bind();
+					uint32_t count = mesh.first->GetIndexBuffer().value()->GetCount();
+					glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
+					mesh.first->UnBind();
+				}
+				mGeometryPass.second->UnBind();
+			}
+			mGeometryPass.second->UnBind();
+
+			mLightingPass.first->Bind();
+			//TOADD
+			mLightingPass.first->UnBind();
+		}
 		//TODO Render GBuffer To Lighting Pass
 	}
 

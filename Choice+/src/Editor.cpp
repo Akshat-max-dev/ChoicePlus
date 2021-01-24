@@ -8,6 +8,15 @@ namespace ChoicePlus
 	{
 		mPipeline->Init();
 		mActiveScene = new Scene("Choice+");
+
+		//Temp
+		mCamera = std::make_unique<EditorCamera>();
+
+		Model model;
+		model.Load("G:/Crytek Sponza/Sponza/sponza.obj", "");
+		SceneObject sceneobject;
+		sceneobject.AddProperty<Model>(model);
+		mActiveScene->AddObject(sceneobject);
 	}
 
 	Editor::~Editor()
@@ -62,18 +71,21 @@ namespace ChoicePlus
 			ImGui::EndMenuBar();
 		}
 
-		static bool show = true;
-		ImGui::ShowDemoWindow(&show);
+		mSceneHiearchyPanel->Draw();
+		mSceneInspector->Draw();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin("Viewport");
 
-		//ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-		//if (m_ViewportSize != *(glm::vec2*)&viewportSize)
-		//{
-			//m_ViewportSize.x = viewportSize.x;
-			//m_ViewportSize.y = viewportSize.y;
-		//}
+		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+		if (mViewportSize != *(glm::vec2*)&viewportSize)
+		{
+			mViewportSize.x = viewportSize.x;
+			mViewportSize.y = viewportSize.y;
+		}
+
+		uint32_t Id = mPipeline->FinalResult();
+		ImGui::Image((void*)(Id), ImVec2{ mViewportSize.x, mViewportSize.y }, ImVec2{ 0,1 }, ImVec2{ 1,0 });
 
 		ImGui::End();
 		ImGui::PopStyleVar();
@@ -81,5 +93,11 @@ namespace ChoicePlus
 		mConsole->Draw();
 
 		ImGui::End();
+	}
+
+	void Editor::Update()
+	{
+		mCamera->Update();
+		mPipeline->Update(mActiveScene, mCamera->CameraData());
 	}
 }

@@ -75,7 +75,7 @@ namespace ChoicePlus
 		mCaptureSkyboxPass.first->Visible(w, h);
 	}
 
-	void Pipeline::Draw(const Scene* scene)
+	void Pipeline::Update(Scene* with, std::pair<glm::mat4, glm::vec3>& to)
 	{
 		mCaptureSkyboxPass.first->Bind();
 		mCaptureSkyboxPass.second->Bind();

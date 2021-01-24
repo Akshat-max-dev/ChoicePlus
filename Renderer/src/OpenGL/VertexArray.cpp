@@ -25,7 +25,7 @@ namespace ChoicePlus
 	}
 
 	void VertexArray::Setup(const std::shared_ptr<Buffer<BufferType::VERTEX>>& vertexBuffer, 
-		const std::optional<std::shared_ptr<Buffer<BufferType::INDEX>>>& indexBuffer, const std::string& layout)
+		const std::string& layout)
 	{
 		cpassert(vertexBuffer);
 		glBindVertexArray(mRendererId);
@@ -51,12 +51,15 @@ namespace ChoicePlus
 		}
 
 		mVertexBuffer = vertexBuffer;
+	}
 
+	void VertexArray::SetIndexBuffer(const std::optional<std::shared_ptr<Buffer<BufferType::INDEX>>>& indexBuffer)
+	{
 		if (indexBuffer.has_value())
 		{
 			indexBuffer.value()->Bind();
-			mIndexBuffer = indexBuffer.value();
+			mIndexBuffer = indexBuffer;
 		}
-		else mIndexBuffer = nullptr;
+		else mIndexBuffer = std::nullopt;
 	}
 }

@@ -42,7 +42,8 @@ namespace ChoicePlus
 	public:
 		void Init()override;
 		void Visible(const uint32_t w, const uint32_t h)override;
-		void Draw(const Scene* scene)override; //TO COMPLETE PARAMETER
+		void Update(Scene* with, std::pair<glm::mat4, glm::vec3>& to)override;
+		const uint32_t FinalResult()const override { return mLightingPass.first->GetFinalResultId(); }
 	private:
 		std::pair<std::unique_ptr<DeferredGeometryCapture>, std::unique_ptr<Shader>> mGeometryPass;
 		std::pair<std::unique_ptr<DeferredLightingCapture>, std::unique_ptr<Shader>> mLightingPass;
