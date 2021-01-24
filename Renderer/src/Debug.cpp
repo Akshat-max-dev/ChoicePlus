@@ -11,9 +11,7 @@ namespace ChoicePlus
 	{
 		if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
 
-		CONSOLE("---------------------------------------------------------");
 		std::string msg = message;
-		CONSOLE("---------------------------------------------------------");
 
 		switch (type)
 		{
@@ -28,6 +26,8 @@ namespace ChoicePlus
 		case GL_DEBUG_TYPE_OTHER:               CONSOLE("Type: Other{w}"); break;
 		} 
 
+		CONSOLE("---------------------------------------------------------");
+
 		switch (severity)
 		{
 		case GL_DEBUG_SEVERITY_HIGH:         msg.append("{e}"); break;
@@ -37,6 +37,8 @@ namespace ChoicePlus
 		}
 
 		CONSOLE(msg.c_str());
+
+		CONSOLE("---------------------------------------------------------");
 	}
 
 	void EnableOpenGLDebugging()
