@@ -1,37 +1,65 @@
 #pragma once
 #include"c+pch.h"
 
-#include<glm/glm.hpp>
-#include<glm/gtc/matrix_transform.hpp>
-#define GLM_ENABLE_EXPERIMENTAL
-#include<glm/gtx/quaternion.hpp>
+#include"Property/Model.h"
+#include"Property/Transform.h"
+
+#include"src/Log.h"
+
 
 namespace ChoicePlus
 {
-	struct Transform
-	{
-		glm::vec3 Position = { 0.0f ,0.0f, 0.0f };
-		glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
-		glm::vec3 Scale = { 1.0f, 1.0f, 1.0f };
-		glm::mat4 transform = glm::mat4(1.0f);
-
-		glm::mat4& GetTransform()
-		{
-			glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
-			
-			transform = glm::translate(glm::mat4(1.0f), Position) * rotation * glm::scale(glm::mat4(1.0f), Scale);
-			return transform;
-		}
-	};
-
 	class SceneObject
 	{
 	public:
-		Transform& GetTransform() { return mTransform; }
-		std::string& Name() { return mName; }
-	protected:
-		Transform mTransform;
-		std::string mName;
+		template<typename T>
+		void AddProperty(const T& property_p) { static_assert(false); }
+
+		template<>
+		void AddProperty<Model>(const Model& model)
+		{
+			if (!HasProperty("Model"))mProperties.insert({ "Model", model });
+			else CONSOLE("Property Already Exists{e}");
+		}
+
+		template<>
+		void AddProperty<Transform>(const Transform& transform)
+		{
+			if (!HasProperty("Transform"))mProperties.insert({ "Transform", transform });
+			else CONSOLE("Property Already Exists{e}");
+		}
+
+		template<typename T>
+		std::optional<T> GetProperty() { static_assert(false); }
+
+		template<>
+		std::optional<Model> GetProperty<Model>()
+		{
+			auto it = mProperties.find("Model");
+			if (it != mProperties.end())
+			{
+				std::optional<Model> ret(std::any_cast<Model>(it->second));
+				return ret;
+			}
+			return std::nullopt;
+		}
+
+		template<> 
+		std::optional<Transform> GetProperty<Transform>()
+		{
+			auto it = mProperties.find("Transform");
+			if (it != mProperties.end())return std::any_cast<Transform>(it->second);
+			return std::nullopt;
+		}
+	private:
+		bool HasProperty(const std::string& of)
+		{
+			if (mProperties.find(of) != mProperties.end())
+				return true;
+			return false;
+		}
+	private:
+		std::map<std::string, std::any> mProperties;
 	};
 
 }

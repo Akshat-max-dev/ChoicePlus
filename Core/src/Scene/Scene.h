@@ -5,11 +5,16 @@
 
 namespace ChoicePlus
 {
+	enum class SceneObjectTypes
+	{
+		MODEL = 0, LIGHT = 1
+	};
+
 	class Scene
 	{
 	public:
 		Scene(const std::string& name);
-		void AddObject(const SceneObject sceneobject);
+		void AddObject(const SceneObject& object);
 		void DeleteObject(const uint32_t index);
 
 		std::string& Name() { return mName; }

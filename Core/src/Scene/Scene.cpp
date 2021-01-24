@@ -6,9 +6,9 @@ namespace ChoicePlus
 	{
 	}
 
-	void Scene::AddObject(const SceneObject sceneobject)
+	void Scene::AddObject(const SceneObject& object)
 	{
-		mSceneObjects.push_back(sceneobject);
+		mSceneObjects.push_back(object);
 	}
 
 	void Scene::DeleteObject(const uint32_t index)
