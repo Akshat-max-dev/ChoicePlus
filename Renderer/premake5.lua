@@ -21,13 +21,20 @@ project "Renderer"
         "%{wks.location}/Choice+/src",
         "%{Dependency.Glad}",
         "%{Dependency.glm}",
-        "%{Dependency.ImGui}"
+        "%{Dependency.ImGui}",
+        "%{Dependency.assimp}"
+    }
+
+    libdirs
+    {
+        "%{wks.location}/vendor/assimp/bin"
     }
 
     links
     {
         "Glad",
-        "ImGui"
+        "ImGui",
+        "assimp.lib"
     }
 
     filter "system:windows"

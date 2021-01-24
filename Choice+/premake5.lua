@@ -22,7 +22,8 @@ project "Choice+"
         "%{Dependency.GLFW}",
         "%{Dependency.Glad}",
         "%{Dependency.ImGui}",
-        "%{Dependency.glm}"
+        "%{Dependency.glm}",
+        "%{Dependency.assimp}"
     }
 
     defines
