@@ -20,6 +20,7 @@ namespace ChoicePlus
 
 		static Application* Get() { return sInstance; }
 		std::unique_ptr<Window>& GetWindow() { return mWindow; }
+		std::unique_ptr<Editor>& GetEditor() { return mEditor; }
 	private:
 		static Application* sInstance;
 		void GUI_Init();

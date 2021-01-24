@@ -37,16 +37,19 @@ namespace ChoicePlus
 
 	void Application::Run()
 	{
+		glEnable(GL_DEPTH_TEST);
 		GLFWwindow* window = mWindow->GetNativeWindow();
 		while (!glfwWindowShouldClose(window))
 		{
 			glfwPollEvents();
-			glClear(GL_COLOR_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 			GUI_Begin();
 			mEditor->Draw();
 			GUI_End();
+
+			mEditor->Update();
 
 			glfwSwapBuffers(window);
 		}
@@ -156,6 +159,22 @@ namespace ChoicePlus
 		Application::Get()->Shutdown();
 	}
 
+	void InputCallbacks::button_callback(GLFWwindow* window, int button, int action, int mods)
+	{
+		if (action == GLFW_PRESS)Application::Get()->GetEditor()->CurrentCamera()->OnButtonDown(button);
+		else if (action == GLFW_RELEASE)Application::Get()->GetEditor()->CurrentCamera()->OnButtonUp(button);
+	}
+
+	void InputCallbacks::cursor_callback(GLFWwindow* window, double xpos, double ypos)
+	{
+		Application::Get()->GetEditor()->CurrentCamera()->OnMove(xpos, ypos);
+	}
+
+	void InputCallbacks::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+	{
+		Application::Get()->GetEditor()->CurrentCamera()->OnScroll(yoffset);
+	}
+
 	bool Input::IsKeyPressed(int key)
 	{
 		int action = glfwGetKey(Application::Get()->GetWindow()->GetNativeWindow(), key);
@@ -166,5 +185,12 @@ namespace ChoicePlus
 	{
 		int action = glfwGetMouseButton(Application::Get()->GetWindow()->GetNativeWindow(), button);
 		return action == GLFW_PRESS;
+	}
+
+	glm::vec2 Input::GetMousePosition()
+	{
+		double xpos, ypos;
+		glfwGetCursorPos(Application::Get()->GetWindow()->GetNativeWindow(), &xpos, &ypos);
+		return { (float)xpos, (float)ypos };
 	}
 }
