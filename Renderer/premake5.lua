@@ -22,7 +22,8 @@ project "Renderer"
         "%{Dependency.Glad}",
         "%{Dependency.glm}",
         "%{Dependency.ImGui}",
-        "%{Dependency.assimp}"
+        "%{Dependency.assimp}",
+        "%{Dependency.tinyddsloader}"
     }
 
     libdirs

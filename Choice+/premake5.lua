@@ -23,7 +23,8 @@ project "Choice+"
         "%{Dependency.Glad}",
         "%{Dependency.ImGui}",
         "%{Dependency.glm}",
-        "%{Dependency.assimp}"
+        "%{Dependency.assimp}",
+        "%{Dependency.tinyddsloader}"
     }
 
     defines

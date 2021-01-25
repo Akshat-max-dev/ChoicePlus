@@ -17,6 +17,7 @@ Dependency["Glad"] = "%{wks.location}/vendor/Glad/include"
 Dependency["ImGui"] = "%{wks.location}/vendor/ImGui"
 Dependency["glm"] = "%{wks.location}/vendor/glm"
 Dependency["assimp"] = "%{wks.location}/vendor/assimp/include"
+Dependency["tinyddsloader"] = "%{wks.location}/vendor/tinyddsloader"
 
 group "Dependencies"
     include "vendor/GLFW"
