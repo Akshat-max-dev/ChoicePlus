@@ -103,7 +103,6 @@ namespace ChoicePlus
 		name.append(".cpmodel");
 		std::string dstFile = dstDirectory + name;
 
-		//Temp
 		if (std::filesystem::exists(std::filesystem::path(dstFile)))return dstFile;
 
 		Assimp::Importer importer;
@@ -122,7 +121,7 @@ namespace ChoicePlus
 			return {};
 		}
 
-		std::string srcDirectory = srcFile.substr(0, srcFile.find_last_of('/') + 1);
+		std::string srcDirectory = srcFile.substr(0, srcFile.find_last_of('\\') + 1);
 
 		std::vector<DumpableMaterialData> matData(scene->mNumMaterials);
 

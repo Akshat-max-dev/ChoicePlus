@@ -1,5 +1,7 @@
 #include"SceneHiearchyPanel.h"
 
+#include"src/FileDialogs.h"
+
 namespace ChoicePlus
 {
 	SceneHiearchyPanel::SceneHiearchyPanel()
@@ -43,13 +45,16 @@ namespace ChoicePlus
 			{
 				if (ImGui::MenuItem("Import"))
 				{
-					//File Dialogs to add
-					std::string dumpedmodelsrc = DumpModel("G:/LearnOpenGL-master/resources/objects/backpack/backpack.obj", "E:/Choice+/Choice+/assets/models/");
-					Model model;
-					model.Load(dumpedmodelsrc);
-					SceneObject sceneobject;
-					sceneobject.AddProperty<Model>(model);
-					mScene->AddObject(sceneobject);
+					std::optional<std::string> openfile = FileDialogs::OpenFile("All Files");
+					if (openfile.has_value())
+					{
+						std::string dumpedmodelsrc = DumpModel(openfile.value(), "E:/Choice+/Choice+/assets/models/");
+						Model model;
+						model.Load(dumpedmodelsrc);
+						SceneObject sceneobject;
+						sceneobject.AddProperty<Model>(model);
+						mScene->AddObject(sceneobject);
+					}					
 				}
 				ImGui::EndMenu();
 			}
