@@ -36,26 +36,22 @@ namespace ChoicePlus
 		}
 
 		template<typename T>
-		std::optional<T> GetProperty() { static_assert(false); }
+		T* GetProperty() { static_assert(false); }
 
 		template<>
-		std::optional<Model> GetProperty<Model>()
+		Model* GetProperty<Model>()
 		{
 			auto it = mProperties.find("Model");
-			if (it != mProperties.end())
-			{
-				std::optional<Model> ret(std::any_cast<Model>(it->second));
-				return ret;
-			}
-			return std::nullopt;
+			if (it != mProperties.end())return std::any_cast<Model>(&it->second);
+			return nullptr;
 		}
 
 		template<> 
-		std::optional<Transform> GetProperty<Transform>()
+		Transform* GetProperty<Transform>()
 		{
 			auto it = mProperties.find("Transform");
-			if (it != mProperties.end())return std::any_cast<Transform>(it->second);
-			return std::nullopt;
+			if (it != mProperties.end())return std::any_cast<Transform>(&it->second);
+			return nullptr;
 		}
 	private:
 		bool HasProperty(const std::string& of)

@@ -20,45 +20,45 @@ namespace ChoicePlus
 		CompileShader(sources);
 	}
 
-	void Shader::Int(const std::string& name, int value)
+	void Shader::Int(const char* name, int value)
 	{
-		int location = glGetUniformLocation(mRendererId, name.c_str());
+		int location = glGetUniformLocation(mRendererId, name);
 		glUniform1i(location, value);
 	}
 
-	void Shader::Float(const std::string& name, float value)
+	void Shader::Float(const char* name, float value)
 	{
-		int location = glGetUniformLocation(mRendererId, name.c_str());
+		int location = glGetUniformLocation(mRendererId, name);
 		glUniform1f(location, value);
 	}
 
-	void Shader::Float2(const std::string& name, const glm::vec2& value)
+	void Shader::Float2(const char* name, const glm::vec2& value)
 	{
-		int location = glGetUniformLocation(mRendererId, name.c_str());
+		int location = glGetUniformLocation(mRendererId, name);
 		glUniform2f(location, value.x, value.y);
 	}
 
-	void Shader::Float3(const std::string& name, const glm::vec3& value)
+	void Shader::Float3(const char* name, const glm::vec3& value)
 	{
-		int location = glGetUniformLocation(mRendererId, name.c_str());
+		int location = glGetUniformLocation(mRendererId, name);
 		glUniform3f(location, value.x, value.y, value.z);
 	}
 
-	void Shader::Float4(const std::string& name, const glm::vec4& value)
+	void Shader::Float4(const char* name, const glm::vec4& value)
 	{
-		int location = glGetUniformLocation(mRendererId, name.c_str());
+		int location = glGetUniformLocation(mRendererId, name);
 		glUniform4f(location, value.x, value.y, value.z, value.w);
 	}
 
-	void Shader::Mat3(const std::string& name, const glm::mat3& value)
+	void Shader::Mat3(const char* name, const glm::mat3& value)
 	{
-		int location = glGetUniformLocation(mRendererId, name.c_str());
+		int location = glGetUniformLocation(mRendererId, name);
 		glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 
-	void Shader::Mat4(const std::string& name, const glm::mat4& value)
+	void Shader::Mat4(const char* name, const glm::mat4& value)
 	{
-		int location = glGetUniformLocation(mRendererId, name.c_str());
+		int location = glGetUniformLocation(mRendererId, name);
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 

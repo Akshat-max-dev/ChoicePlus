@@ -26,17 +26,18 @@ namespace ChoicePlus
 		{
 			mGeometryPass.first->Bind();
 			auto model = object.GetProperty<Model>();
-			if (model.has_value())
+			if (model)
 			{
 				mGeometryPass.second->Bind();
-				for (auto& mesh : model.value().GetMeshes())
+				for (auto& mesh : model->GetMeshes())
 				{
 					if (model->GetMaterials()[mesh.second]->mDiffuseMap)
 						model->GetMaterials()[mesh.second]->mDiffuseMap->Bind(0);
+						mGeometryPass.second->Int("gMaterial.Diffuse", 0);
 					if (model->GetMaterials()[mesh.second]->mNormalMap)
 						model->GetMaterials()[mesh.second]->mNormalMap->Bind(1);
-					mGeometryPass.second->Int("gMaterial.Diffuse", 0);
-					mGeometryPass.second->Int("gMaterial.Normal", 1);
+						mGeometryPass.second->Int("gMaterial.Normal", 1);
+					
 					mGeometryPass.second->Mat4("uViewProjection", to.first);
 					mGeometryPass.second->Mat4("uTransform", glm::mat4(1.0f));
 					mesh.first->Bind();
