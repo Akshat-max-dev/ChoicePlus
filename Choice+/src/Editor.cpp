@@ -12,11 +12,7 @@ namespace ChoicePlus
 		//Temp
 		mCamera = std::make_unique<EditorCamera>();
 
-		Model model;
-		model.Load("G:/Crytek Sponza/Sponza/sponza.obj", "");
-		SceneObject sceneobject;
-		sceneobject.AddProperty<Model>(model);
-		mActiveScene->AddObject(sceneobject);
+		mSceneHiearchyPanel->ActiveScene(mActiveScene);
 	}
 
 	Editor::~Editor()
@@ -80,6 +76,7 @@ namespace ChoicePlus
 		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
 		if (mViewportSize != *(glm::vec2*)&viewportSize)
 		{
+			mCamera->Visible((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
 			mViewportSize.x = viewportSize.x;
 			mViewportSize.y = viewportSize.y;
 		}

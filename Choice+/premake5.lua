@@ -24,7 +24,9 @@ project "Choice+"
         "%{Dependency.ImGui}",
         "%{Dependency.glm}",
         "%{Dependency.assimp}",
-        "%{Dependency.tinyddsloader}"
+        "%{Dependency.tinyddsloader}",
+        "%{Dependency.compressonator}",
+        "%{Dependency.Gli}"
     }
 
     defines

@@ -1,7 +1,6 @@
 #include"Includes.h"
 
-int main()
-{
+int main() {
 	ChoicePlus::Application app;
 	app.Run();
 }

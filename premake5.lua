@@ -18,6 +18,8 @@ Dependency["ImGui"] = "%{wks.location}/vendor/ImGui"
 Dependency["glm"] = "%{wks.location}/vendor/glm"
 Dependency["assimp"] = "%{wks.location}/vendor/assimp/include"
 Dependency["tinyddsloader"] = "%{wks.location}/vendor/tinyddsloader"
+Dependency["compressonator"] = "%{wks.location}/vendor/compressonator/cmp_framework"
+Dependency["Gli"] = "%{wks.location}/vendor/Gli"
 
 group "Dependencies"
     include "vendor/GLFW"

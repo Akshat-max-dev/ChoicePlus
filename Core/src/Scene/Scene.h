@@ -2,6 +2,7 @@
 #include"c+pch.h"
 
 #include"SceneObject.h"
+#include"GUI/SceneHiearchyPanel.h"
 
 namespace ChoicePlus
 {
@@ -17,10 +18,12 @@ namespace ChoicePlus
 		void AddObject(const SceneObject& object);
 		void DeleteObject(const uint32_t index);
 
-		std::string& Name() { return mName; }
+		//std::string& Name() { return mName; }
 		std::vector<SceneObject>& GetSceneObjects() { return mSceneObjects; }
 	private:
 		std::string mName;
 		std::vector<SceneObject> mSceneObjects;
+	private:
+		friend class SceneHiearchyPanel;
 	};
 }

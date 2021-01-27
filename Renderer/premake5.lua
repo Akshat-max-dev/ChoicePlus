@@ -11,7 +11,10 @@ project "Renderer"
     {
         "**.h",
         "src/**.h",
-        "src/**.cpp"
+        "src/**.cpp",
+
+        "%{wks.location}/vendor/tinyddsloader/tinyddsloader.h",
+        "%{wks.location}/vendor/tinyddsloader/tinyddsloader.cpp"
     }
 
     includedirs
@@ -23,19 +26,23 @@ project "Renderer"
         "%{Dependency.glm}",
         "%{Dependency.ImGui}",
         "%{Dependency.assimp}",
-        "%{Dependency.tinyddsloader}"
+        "%{Dependency.tinyddsloader}",
+        "%{Dependency.compressonator}",
+        "%{Dependency.Gli}"
     }
 
     libdirs
     {
-        "%{wks.location}/vendor/assimp/bin"
+        "%{wks.location}/vendor/assimp/bin",
+        "%{wks.location}/vendor/compressonator/bin"
     }
 
     links
     {
         "Glad",
         "ImGui",
-        "assimp.lib"
+        "assimp.lib",
+        "CMP_Framework_MD_DLL.lib"
     }
 
     filter "system:windows"

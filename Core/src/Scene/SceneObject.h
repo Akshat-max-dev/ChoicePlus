@@ -12,13 +12,19 @@ namespace ChoicePlus
 	class SceneObject
 	{
 	public:
+		const std::string& Name()const { return mName; }
+
 		template<typename T>
 		void AddProperty(const T& property_p) { static_assert(false); }
 
 		template<>
 		void AddProperty<Model>(const Model& model)
 		{
-			if (!HasProperty("Model"))mProperties.insert({ "Model", model });
+			if (!HasProperty("Model"))
+			{
+				mName = model.Name();
+				mProperties.insert({ "Model", model });
+			}
 			else CONSOLE("Property Already Exists{e}");
 		}
 
@@ -59,6 +65,7 @@ namespace ChoicePlus
 			return false;
 		}
 	private:
+		std::string mName = "Object";
 		std::map<std::string, std::any> mProperties;
 	};
 

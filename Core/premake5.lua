@@ -25,12 +25,15 @@ project "Core"
 		"%{Dependency.ImGui}",
 		"%{Dependency.glm}",
 		"%{Dependency.assimp}",
-		"%{Dependency.tinyddsloader}"
+		"%{Dependency.tinyddsloader}",
+		"%{Dependency.compressonator}",
+		"%{Dependency.Gli}"
 	}
 
 	libdirs
 	{
-		"%{wks.location}/vendor/assimp/bin"
+		"%{wks.location}/vendor/assimp/bin",
+		"%{wks.location}/vendor/compressonator/bin"
 	}
 
 	links
@@ -39,7 +42,8 @@ project "Core"
 		"Glad",
 		"ImGui",
 		"Renderer",
-		"assimp.lib"
+		"assimp.lib",
+		"CMP_Framework_MD_DLL.lib"
 	}
 
 	defines

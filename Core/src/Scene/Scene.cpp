@@ -13,6 +13,6 @@ namespace ChoicePlus
 
 	void Scene::DeleteObject(const uint32_t index)
 	{
-		mSceneObjects.erase(mSceneObjects.begin(), mSceneObjects.begin() + index);
+		mSceneObjects.erase(mSceneObjects.begin() + index);
 	}
 }
