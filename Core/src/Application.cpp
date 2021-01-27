@@ -34,6 +34,9 @@ namespace ChoicePlus
 #ifdef DEBUG
 		EnableOpenGLDebugging();
 #endif
+
+		InputCallbacks Callbacks;
+		Callbacks.Enable();
 	}
 
 	Application::~Application()
@@ -53,14 +56,12 @@ namespace ChoicePlus
 		while (!glfwWindowShouldClose(window))
 		{
 			glfwPollEvents();
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+
+			mEditor->Update();
 
 			GUI_Begin();
 			mEditor->Draw();
 			GUI_End();
-
-			mEditor->Update();
 
 			glfwSwapBuffers(window);
 		}
@@ -163,6 +164,9 @@ namespace ChoicePlus
 	{
 		GLFWwindow* window = Application::Get()->GetWindow()->GetNativeWindow();
 		glfwSetWindowCloseCallback(window, window_close_callback);
+		glfwSetCursorPosCallback(window, cursor_callback);
+		glfwSetMouseButtonCallback(window, button_callback);
+		glfwSetScrollCallback(window, scroll_callback);
 	}
 
 	void InputCallbacks::window_close_callback(GLFWwindow* window)

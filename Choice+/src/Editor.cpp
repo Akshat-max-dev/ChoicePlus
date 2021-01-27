@@ -76,13 +76,14 @@ namespace ChoicePlus
 		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
 		if (mViewportSize != *(glm::vec2*)&viewportSize)
 		{
+			mPipeline->Visible((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
 			mCamera->Visible((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
 			mViewportSize.x = viewportSize.x;
 			mViewportSize.y = viewportSize.y;
 		}
 
-		uint32_t Id = mPipeline->FinalResult();
-		ImGui::Image((void*)(Id), ImVec2{ mViewportSize.x, mViewportSize.y }, ImVec2{ 0,1 }, ImVec2{ 1,0 });
+		void* Id = (void*)mPipeline->FinalResult();
+		ImGui::Image(Id, ImVec2{ mViewportSize.x, mViewportSize.y }, ImVec2{ 0,1 }, ImVec2{ 1,0 });
 
 		ImGui::End();
 		ImGui::PopStyleVar();

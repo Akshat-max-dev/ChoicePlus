@@ -22,15 +22,17 @@ namespace ChoicePlus
 	void DeferredPipeline::Update(Scene* with, std::pair<glm::mat4, glm::vec3>& to)
 	{
 		Pipeline::Update(with, to);
+		mGeometryPass.first->Bind();
 		for (auto &object : with->GetSceneObjects())
 		{
-			mGeometryPass.first->Bind();
+			
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			auto model = object.GetProperty<Model>();
 			if (model)
 			{
-				mGeometryPass.second->Bind();
 				for (auto& mesh : model->GetMeshes())
 				{
+					mGeometryPass.second->Bind();
 					if (model->GetMaterials()[mesh.second]->mDiffuseMap)
 						model->GetMaterials()[mesh.second]->mDiffuseMap->Bind(0);
 						mGeometryPass.second->Int("gMaterial.Diffuse", 0);
@@ -39,21 +41,26 @@ namespace ChoicePlus
 						mGeometryPass.second->Int("gMaterial.Normal", 1);
 					
 					mGeometryPass.second->Mat4("uViewProjection", to.first);
-					mGeometryPass.second->Mat4("uTransform", glm::mat4(1.0f));
+					mGeometryPass.second->Mat4("uTransform", glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f)));
 					mesh.first->Bind();
 					uint32_t count = mesh.first->GetIndexBuffer().value()->GetCount();
 					glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
 					mesh.first->UnBind();
+					mGeometryPass.second->UnBind();
 				}
-				mGeometryPass.second->UnBind();
 			}
-			mGeometryPass.first->UnBind();
-
-			mLightingPass.first->Bind();
-			//TOADD
-			mLightingPass.first->UnBind();
 		}
-		//TODO Render GBuffer To Lighting Pass
+		mGeometryPass.first->UnBind();
+		
+		mLightingPass.first->Bind();
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+		mLightingPass.second->Bind();
+		mGeometryPass.first->BindGBuffer({ 0, 1, 2, 3 });
+		mLightingPass.second->Int("gBuffer.AlbedoS", 2);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		mLightingPass.second->UnBind();
+		mLightingPass.first->UnBind();
 	}
 
 	DeferredGeometryCapture::DeferredGeometryCapture() :FrameBuffer()

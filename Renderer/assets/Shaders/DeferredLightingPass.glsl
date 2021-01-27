@@ -21,7 +21,16 @@ out vec4 fFinalResult;
 
 in vec2 vTexCoords;
 
+struct GBuffer
+{
+	//sampler2D Position;
+	//sampler2D Normal
+	sampler2D AlbedoS;
+};
+
+uniform GBuffer gBuffer;
+
 void main()
 {
-	//TO DO
+	fFinalResult = texture(gBuffer.AlbedoS, vTexCoords);
 }

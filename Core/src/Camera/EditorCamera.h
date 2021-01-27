@@ -22,9 +22,9 @@ namespace ChoicePlus
 		MovementType mMovementType = MovementType::NONE;
 
 		glm::vec3 mRight;
-		glm::vec3 mUp = { 0.0f, 1.0f, 0.0f };
-		glm::vec3 mOffset = { 0.0f, -1.0f, 5.0f };
-		glm::vec3 mFocus = { 0.0f, 0.0f, 0.0f };
+		glm::vec3 mUp;
+		glm::vec3 mOffset;
+		glm::vec3 mFocus;
 
 		float mDeltaX, mDeltaY, mLastX, mLastY;
 	};
