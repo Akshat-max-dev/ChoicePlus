@@ -51,6 +51,7 @@ namespace ChoicePlus
 
 	void Application::Run()
 	{
+		glfwSwapInterval(1);
 		glEnable(GL_DEPTH_TEST);
 		GLFWwindow* window = mWindow->GetNativeWindow();
 		while (!glfwWindowShouldClose(window))

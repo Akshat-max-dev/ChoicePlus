@@ -16,7 +16,7 @@ namespace ChoicePlus
 		DeferredGeometryCapture();
 		~DeferredGeometryCapture();
 
-		void BindGBuffer(const glm::uvec4& slots);
+		void BindGBuffer(glm::uvec4 slots);
 	private:
 		void Invalidate()override;
 	private:
@@ -29,7 +29,7 @@ namespace ChoicePlus
 		DeferredLightingCapture();
 		~DeferredLightingCapture();
 
-		void BindFinalResult(const uint32_t slot)const;
+		void BindFinalResult(uint32_t slot)const;
 		const uint32_t& GetFinalResultId()const { return mFinalResult; }
 	private:
 		void Invalidate()override;

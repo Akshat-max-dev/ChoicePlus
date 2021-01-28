@@ -32,7 +32,7 @@ namespace ChoicePlus
 
 		const std::string& GetFilepath()const { return mSrcCompressed; }
 
-		void Bind(const uint32_t slot)const { glActiveTexture(GL_TEXTURE0 + slot); glBindTexture(GL_TEXTURE_2D, mRendererId); }
+		void Bind(uint32_t slot)const { glActiveTexture(GL_TEXTURE0 + slot); glBindTexture(GL_TEXTURE_2D, mRendererId); }
 	private:
 		void Load();
 	private:

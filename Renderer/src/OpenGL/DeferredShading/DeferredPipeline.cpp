@@ -23,10 +23,9 @@ namespace ChoicePlus
 	{
 		Pipeline::Update(with, to);
 		mGeometryPass.first->Bind();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		for (auto &object : with->GetSceneObjects())
 		{
-			
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			auto model = object.GetProperty<Model>();
 			if (model)
 			{
@@ -35,18 +34,16 @@ namespace ChoicePlus
 					mGeometryPass.second->Bind();
 					if (model->GetMaterials()[mesh.second]->mDiffuseMap)
 						model->GetMaterials()[mesh.second]->mDiffuseMap->Bind(0);
-						mGeometryPass.second->Int("gMaterial.Diffuse", 0);
+					mGeometryPass.second->Int("gMaterial.Diffuse", 0);
 					if (model->GetMaterials()[mesh.second]->mNormalMap)
 						model->GetMaterials()[mesh.second]->mNormalMap->Bind(1);
-						mGeometryPass.second->Int("gMaterial.Normal", 1);
-					
+					mGeometryPass.second->Int("gMaterial.Normal", 1);
+
 					mGeometryPass.second->Mat4("uViewProjection", to.first);
-					mGeometryPass.second->Mat4("uTransform", glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f)));
+					mGeometryPass.second->Mat4("uTransform", glm::mat4(1.0));
 					mesh.first->Bind();
 					uint32_t count = mesh.first->GetIndexBuffer().value()->GetCount();
 					glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
-					mesh.first->UnBind();
-					mGeometryPass.second->UnBind();
 				}
 			}
 		}
@@ -59,7 +56,6 @@ namespace ChoicePlus
 		mGeometryPass.first->BindGBuffer({ 0, 1, 2, 3 });
 		mLightingPass.second->Int("gBuffer.AlbedoS", 2);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
-		mLightingPass.second->UnBind();
 		mLightingPass.first->UnBind();
 	}
 
@@ -74,7 +70,7 @@ namespace ChoicePlus
 		glDeleteTextures(mGBuffer.size(), &mGBuffer[0]);
 	}
 
-	void DeferredGeometryCapture::BindGBuffer(const glm::uvec4& slots)
+	void DeferredGeometryCapture::BindGBuffer(glm::uvec4 slots)
 	{
 		glActiveTexture(GL_TEXTURE0 + slots.x);
 		glBindTexture(GL_TEXTURE_2D, mGBuffer[0]);
@@ -140,11 +136,13 @@ namespace ChoicePlus
 		glCreateTextures(GL_TEXTURE_2D, 1, &Id);
 		glBindTexture(GL_TEXTURE_2D, Id);
 
-		glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH_COMPONENT32, mWidth, mHeight);
+		glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH_COMPONENT32F, mWidth, mHeight);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, Id, 0);
 
@@ -174,7 +172,7 @@ namespace ChoicePlus
 		glDeleteTextures(1, &mFinalResult);
 	}
 
-	void DeferredLightingCapture::BindFinalResult(const uint32_t slot) const
+	void DeferredLightingCapture::BindFinalResult(uint32_t slot) const
 	{
 		glActiveTexture(GL_TEXTURE0 + slot);
 		glBindTexture(GL_TEXTURE_2D, mFinalResult);

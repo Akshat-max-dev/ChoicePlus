@@ -134,7 +134,7 @@ namespace ChoicePlus
 			std::string diffuse_map = GetTextureName(mat, aiTextureType_DIFFUSE);
 			if (!diffuse_map.empty())
 			{
-				std::string texdiffuse = CompressTexture(srcDirectory + diffuse_map, tdstDirectory, BlockCompressionFormat::BC1, false);
+				std::string texdiffuse = CompressTexture(srcDirectory + diffuse_map, tdstDirectory, BlockCompressionFormat::BC1, true);
 				if (!texdiffuse.empty())matData[i].DiffuseMap = texdiffuse;
 			}
 
@@ -143,7 +143,7 @@ namespace ChoicePlus
 			std::string normal_map = GetTextureName(mat, aiTextureType_HEIGHT);
 			if (!normal_map.empty())
 			{
-				std::string texnormal = CompressTexture(srcDirectory + normal_map, tdstDirectory, BlockCompressionFormat::BC5, false);
+				std::string texnormal = CompressTexture(srcDirectory + normal_map, tdstDirectory, BlockCompressionFormat::BC5, true);
 				if (!texnormal.empty())matData[i].NormalMap = texnormal;
 			}
 		}

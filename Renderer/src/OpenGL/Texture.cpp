@@ -16,23 +16,22 @@ namespace ChoicePlus
 			return {};
 		}
 
-		/*if (generateMips && srcMipSet.m_nMipLevels == 1)
+		if (generateMips && srcMipSet.m_nMipLevels == 1)
 		{
-			int maxMipLevel = CMP_CalcMaxMipLevel(srcMipSet.m_nHeight, srcMipSet.m_nWidth, false);
-			int minSize = CMP_CalcMinMipSize(srcMipSet.m_nHeight, srcMipSet.m_nWidth, maxMipLevel + 1);
+			int minSize = CMP_CalcMinMipSize(srcMipSet.m_nHeight, srcMipSet.m_nWidth, srcMipSet.m_nMaxMipLevels + 1);
 			cmp_status = CMP_GenerateMIPLevels(&srcMipSet, minSize);
 			if (cmp_status != CMP_OK)
 			{
 				std::string msg = "Failed to load mips for texture " + srcFile;
 				msg.append("{e}");
 				CONSOLE(msg.c_str());
-				return;
+				return {};
 			}
-		}*/
+		}
 
 		KernelOptions kerneloptions = {};
 		kerneloptions.format = (CMP_FORMAT)format;
-		kerneloptions.fquality = 0.05f;
+		kerneloptions.fquality = 0.5f;
 
 		CMP_MipSet dstMipSet = {};
 		cmp_status = CMP_ProcessTexture(&srcMipSet, &dstMipSet, kerneloptions, nullptr);
