@@ -11,7 +11,7 @@ namespace ChoicePlus
 	EditorCamera::EditorCamera() :Camera()
 	{
 		mUp = { 0.0f, 1.0f, 0.0f };
-		mOffset = { 0.0f, -1.0f, 5.0f };
+		mOffset = { 0.0f, 0.0f, 5.0f };
 		mFocus = { 0.0f, 0.0f, 0.0f };
 
 		mView = glm::lookAt(mFocus + mOffset, mFocus, mUp);
@@ -44,7 +44,7 @@ namespace ChoicePlus
 		}
 		case MovementType::TRANSLATION:
 		{
-			float sensivity = 0.1f;
+			float sensivity = 0.01f;
 			mFocus += mRight * mDeltaX * sensivity;
 			mFocus += mUp * mDeltaY * sensivity;
 			mView = glm::lookAt(mFocus + mOffset, mFocus, mUp);
@@ -83,7 +83,7 @@ namespace ChoicePlus
 
 	void EditorCamera::OnScroll(double yoffset)
 	{
-		mOffset -= (float)yoffset * mOffset * 0.05f;
+		mOffset -= mOffset * (float)yoffset * 0.05f;
 		mView = glm::lookAt(mFocus + mOffset, mFocus, mUp);
 		RecalculateViewProjection();
 	}

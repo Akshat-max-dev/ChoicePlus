@@ -106,7 +106,7 @@ namespace ChoicePlus
 		if (std::filesystem::exists(std::filesystem::path(dstFile)))return dstFile;
 
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(srcFile, 
+		const aiScene* scene = importer.ReadFile(srcFile,
 			aiProcess_Triangulate |
 			aiProcess_FlipUVs |
 			aiProcess_GenSmoothNormals |
@@ -130,7 +130,7 @@ namespace ChoicePlus
 		for (uint32_t i = 0; i < scene->mNumMaterials; i++)
 		{
 			auto mat = scene->mMaterials[i];
-			
+
 			std::string diffuse_map = GetTextureName(mat, aiTextureType_DIFFUSE);
 			if (!diffuse_map.empty())
 			{
@@ -165,7 +165,7 @@ namespace ChoicePlus
 		uint32_t namesize = (uint32_t)name.size();
 		toFile.write((char*)&namesize, sizeof(namesize));
 		toFile.write((char*)name.data(), namesize);
-		
+
 		uint32_t matsize = (uint32_t)matData.size();
 		toFile.write((char*)&matsize, sizeof(matsize));
 		for (uint32_t i = 0; i < matsize; i++)
@@ -225,7 +225,7 @@ namespace ChoicePlus
 		fromFile.read((char*)mName.data(), namesize);
 
 		mName = mName.substr(0, mName.find_last_of('.'));
-		
+
 		uint32_t matSize;
 		fromFile.read((char*)&matSize, sizeof(matSize));
 		mMaterials.resize(matSize);

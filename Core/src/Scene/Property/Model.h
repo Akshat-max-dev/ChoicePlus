@@ -21,7 +21,7 @@ namespace ChoicePlus
 			delete mDiffuseMap;
 			delete mNormalMap;
 		}
-		
+
 		Texture<TextureTypes::TWO_D>* mDiffuseMap;
 		Texture<TextureTypes::TWO_D>* mNormalMap;
 	};

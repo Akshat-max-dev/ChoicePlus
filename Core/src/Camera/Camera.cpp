@@ -2,6 +2,8 @@
 
 #include<glm/gtc/matrix_transform.hpp>
 
+#include"src/Log.h"
+
 namespace ChoicePlus
 {
 	Camera::Camera()
@@ -12,7 +14,7 @@ namespace ChoicePlus
 
 	void Camera::Visible(const uint32_t w, const uint32_t h)
 	{
-		mAspectRatio = float(w) / float(h);
+		mAspectRatio = (float)w / (float)h;
 		RecalculateViewProjection();
 	}
 
