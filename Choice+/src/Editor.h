@@ -29,6 +29,8 @@ namespace ChoicePlus
 
 		std::unique_ptr<Camera>& CurrentCamera() { return mCamera; }
 	private:
+		void SetEditorLayout();
+	private:
 		std::unique_ptr<Camera> mCamera;
 		std::unique_ptr<Console> mConsole = std::make_unique<Console>();
 		std::unique_ptr<SceneHiearchyPanel> mSceneHiearchyPanel = std::make_unique<SceneHiearchyPanel>();
@@ -36,6 +38,26 @@ namespace ChoicePlus
 		std::unique_ptr<Pipeline> mPipeline = std::make_unique<DeferredPipeline>();
 		Scene* mActiveScene;
 	private:
+		ImGuiWindowFlags mFullscreenWindowFlags = ImGuiWindowFlags_NoBringToFrontOnFocus | 
+												  ImGuiWindowFlags_NoCollapse | 
+												  ImGuiWindowFlags_NoDocking | 
+												  ImGuiWindowFlags_NoFocusOnAppearing |
+												  ImGuiWindowFlags_NoMove | 
+												  ImGuiWindowFlags_NoNavFocus| 
+												  ImGuiWindowFlags_NoResize | 
+												  ImGuiWindowFlags_NoScrollbar | 
+												  ImGuiWindowFlags_NoTitleBar;
+		bool mViewportFullscreen = false;
 		glm::vec2 mViewportSize;
+	private:
+		struct DockIds
+		{
+			uint32_t root = 0;
+			uint32_t bottom = 0;
+			uint32_t left = 0;
+			uint32_t right = 0;
+			uint32_t center = 0;
+		};
+		DockIds mDockIds;
 	};
 }
