@@ -21,6 +21,7 @@ namespace ChoicePlus
 	void FrameBuffer::Bind() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, mRendererId);
+		glViewport(0, 0, mWidth, mHeight);
 	}
 
 	void FrameBuffer::UnBind() const

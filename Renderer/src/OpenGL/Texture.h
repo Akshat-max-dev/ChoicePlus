@@ -76,6 +76,10 @@ namespace ChoicePlus
 		glCreateTextures(_target, 1, &mRendererId);
 		glBindTexture(_target, mRendererId);
 
+		glTexParameteri(_target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(_target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(_target, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(_target, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(_target, GL_TEXTURE_BASE_LEVEL, 0);
 		glTexParameteri(_target, GL_TEXTURE_MAX_LEVEL, static_cast<GLint>(_texture.levels() - 1));
 		glTexParameteriv(_target, GL_TEXTURE_SWIZZLE_RGBA, &_format.Swizzles[0]);

@@ -18,7 +18,7 @@ namespace ChoicePlus
 
 		if (generateMips && srcMipSet.m_nMipLevels == 1)
 		{
-			int minSize = CMP_CalcMinMipSize(srcMipSet.m_nHeight, srcMipSet.m_nWidth, srcMipSet.m_nMaxMipLevels + 1);
+			int minSize = CMP_CalcMinMipSize(srcMipSet.m_nHeight, srcMipSet.m_nWidth, srcMipSet.m_nMaxMipLevels);
 			cmp_status = CMP_GenerateMIPLevels(&srcMipSet, minSize);
 			if (cmp_status != CMP_OK)
 			{
@@ -31,7 +31,7 @@ namespace ChoicePlus
 
 		KernelOptions kerneloptions = {};
 		kerneloptions.format = (CMP_FORMAT)format;
-		kerneloptions.fquality = 0.5f;
+		kerneloptions.fquality = 0.2f;
 
 		CMP_MipSet dstMipSet = {};
 		cmp_status = CMP_ProcessTexture(&srcMipSet, &dstMipSet, kerneloptions, nullptr);

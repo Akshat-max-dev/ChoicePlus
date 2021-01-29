@@ -24,7 +24,7 @@ namespace ChoicePlus
 		Pipeline::Update(with, to);
 		mGeometryPass.first->Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		for (auto &object : with->GetSceneObjects())
+		for (auto& object : with->GetSceneObjects())
 		{
 			auto model = object.GetProperty<Model>();
 			if (model)
@@ -38,9 +38,9 @@ namespace ChoicePlus
 					if (model->GetMaterials()[mesh.second]->mNormalMap)
 						model->GetMaterials()[mesh.second]->mNormalMap->Bind(1);
 					mGeometryPass.second->Int("gMaterial.Normal", 1);
-
+					glm::mat4 s = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f));
 					mGeometryPass.second->Mat4("uViewProjection", to.first);
-					mGeometryPass.second->Mat4("uTransform", glm::mat4(1.0));
+					mGeometryPass.second->Mat4("uTransform", s);
 					mesh.first->Bind();
 					uint32_t count = mesh.first->GetIndexBuffer().value()->GetCount();
 					glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
@@ -48,7 +48,7 @@ namespace ChoicePlus
 			}
 		}
 		mGeometryPass.first->UnBind();
-		
+
 		mLightingPass.first->Bind();
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -153,10 +153,10 @@ namespace ChoicePlus
 
 		if (!(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE))
 		{
-			#ifdef DEBUG
-				CONSOLE("Framebuffer Incomplete{e}");
-				cpassert(0);
-			#endif
+#ifdef DEBUG
+			CONSOLE("Framebuffer Incomplete{e}");
+			cpassert(0);
+#endif
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
@@ -202,10 +202,10 @@ namespace ChoicePlus
 
 		if (!(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE))
 		{
-			#ifdef DEBUG
-				CONSOLE("Framebuffer Incomplete{e}");
-				cpassert(0);
-			#endif
+#ifdef DEBUG
+			CONSOLE("Framebuffer Incomplete{e}");
+			cpassert(0);
+#endif
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
