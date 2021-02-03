@@ -3,7 +3,6 @@
 
 #include"src/Log.h"
 
-#include"OpenGL/Buffer.h"
 #include"OpenGL/VertexArray.h"
 
 #include<assimp/Importer.hpp>
@@ -39,23 +38,16 @@ namespace ChoicePlus
 		std::string NormalMap;
 	};
 
-	const std::string DumpModel(const std::string& srcFile, const std::string& dstDirectory);
-
-	class Model
+	struct Model
 	{
-	public:
 		~Model();
-		void Load(const std::string& srcFile);
 
-		const std::string& Name()const { return mName; }
-		const std::string& GetPath()const { return mSrcFile; }
-
-		const std::vector<std::shared_ptr<Material>>& GetMaterials()const { return mMaterials; }
-		const std::vector<std::pair<std::shared_ptr<VertexArray>, uint32_t>>& GetMeshes()const { return mMeshes; }
-	private:
 		std::string mName;
 		std::vector<std::shared_ptr<Material>> mMaterials;
 		std::vector<std::pair<std::shared_ptr<VertexArray>, uint32_t>> mMeshes;
 		std::string mSrcFile;
 	};
+
+	const std::string DumpModel(const std::string& srcFile, const std::string& dstDirectory);
+	Model* Load(const std::string& srcFile);
 }

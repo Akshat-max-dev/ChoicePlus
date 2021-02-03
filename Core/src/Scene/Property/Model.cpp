@@ -1,5 +1,8 @@
 #include"Model.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4267)
+
 namespace ChoicePlus
 {
 	std::string GetTextureName(const aiMaterial* mat, const aiTextureType type)
@@ -200,15 +203,8 @@ namespace ChoicePlus
 		return dstFile;
 	}
 
-	Model::~Model()
+	Model* Load(const std::string& srcFile)
 	{
-		mMaterials.clear();
-		mMeshes.clear();
-	}
-
-	void Model::Load(const std::string& srcFile)
-	{
-		mSrcFile = srcFile;
 
 		std::ifstream fromFile(srcFile, std::ios::in | std::ios::binary);
 		if (fromFile.fail() && !fromFile.good())
@@ -216,42 +212,47 @@ namespace ChoicePlus
 			std::string msg = "Failed to load " + srcFile;
 			msg.append("{e}");
 			CONSOLE(msg.c_str());
-			return;
+			fromFile.close();
+			return nullptr;
 		}
+
+		Model* model = new Model();
+
+		model->mSrcFile = srcFile;
 
 		uint32_t namesize;
 		fromFile.read((char*)&namesize, sizeof(namesize));
-		mName.resize(namesize);
-		fromFile.read((char*)mName.data(), namesize);
+		model->mName.resize(namesize);
+		fromFile.read((char*)model->mName.data(), namesize);
 
-		mName = mName.substr(0, mName.find_last_of('.'));
+		model->mName = model->mName.substr(0, model->mName.find_last_of('.'));
 
 		uint32_t matSize;
 		fromFile.read((char*)&matSize, sizeof(matSize));
-		mMaterials.resize(matSize);
+		model->mMaterials.resize(matSize);
 
 		for (uint32_t i = 0; i < matSize; i++)
 		{
-			mMaterials[i] = std::make_shared<Material>();
+			model->mMaterials[i] = std::make_shared<Material>();
 
 			uint32_t texdiffusesize;
 			fromFile.read((char*)&texdiffusesize, sizeof(texdiffusesize));
 			std::string diffusemap;
 			diffusemap.resize(texdiffusesize);
 			fromFile.read((char*)diffusemap.data(), texdiffusesize);
-			mMaterials[i]->mDiffuseMap = new Texture<TextureTypes::TWO_D>(diffusemap);
+			model->mMaterials[i]->mDiffuseMap = new Texture<TextureTypes::TWO_D>(diffusemap);
 
 			uint32_t texnormalsize;
 			fromFile.read((char*)&texnormalsize, sizeof(texnormalsize));
 			std::string normalmap;
 			normalmap.resize(texnormalsize);
 			fromFile.read((char*)normalmap.data(), texnormalsize);
-			mMaterials[i]->mNormalMap = new Texture<TextureTypes::TWO_D>(normalmap);
+			model->mMaterials[i]->mNormalMap = new Texture<TextureTypes::TWO_D>(normalmap);
 		}
 
 		uint32_t meshSize;
 		fromFile.read((char*)&meshSize, sizeof(meshSize));
-		mMeshes.resize(meshSize);
+		model->mMeshes.resize(meshSize);
 
 		for (uint32_t i = 0; i < meshSize; i++)
 		{
@@ -268,19 +269,25 @@ namespace ChoicePlus
 			uint32_t materialindex;
 			fromFile.read((char*)&materialindex, sizeof(materialindex));
 
-			mMeshes[i].first = std::make_shared<VertexArray>();
+			model->mMeshes[i].first = std::make_shared<VertexArray>();
 
-			mMeshes[i].first->Bind();
+			model->mMeshes[i].first->VertexBuffer(vertices.data(), numvertices * sizeof(float), "{3} {3} {2} {3} {3}");
+			model->mMeshes[i].first->IndexBuffer(indices.data(), numindices);
 
-			std::shared_ptr<Buffer<BufferType::VERTEX>> vertexbuffer(new Buffer<BufferType::VERTEX>(vertices.data(), numvertices * sizeof(float)));
-			mMeshes[i].first->Setup(vertexbuffer, "{3} {3} {2} {3} {3}");
-
-			std::shared_ptr<Buffer<BufferType::INDEX>> indexbuffer(new Buffer<BufferType::INDEX>(indices.data(), numindices));
-			mMeshes[i].first->SetIndexBuffer(indexbuffer);
-
-			mMeshes[i].second = materialindex;
+			model->mMeshes[i].second = materialindex;
 		}
 
 		fromFile.close();
+
+		return model;
 	}
+
+	Model::~Model()
+	{
+		mMaterials.clear();
+		mMeshes.clear();
+	}
+
+	
 }
+#pragma warning(pop)

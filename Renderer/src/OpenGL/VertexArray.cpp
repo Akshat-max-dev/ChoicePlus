@@ -11,6 +11,8 @@ namespace ChoicePlus
 
 	VertexArray::~VertexArray()
 	{
+		glDeleteBuffers(1, &mVertexBuffer);
+		glDeleteBuffers(1, &mIndexBuffer);
 		glDeleteVertexArrays(1, &mRendererId);
 	}
 
@@ -24,15 +26,17 @@ namespace ChoicePlus
 		glBindVertexArray(0);
 	}
 
-	void VertexArray::Setup(const std::shared_ptr<Buffer<BufferType::VERTEX>>& vertexBuffer, 
-		const std::string& layout)
+	void VertexArray::VertexBuffer(const void* data, uint32_t size, std::string layout)
 	{
-		cpassert(vertexBuffer);
+		cpassert(data);
 		glBindVertexArray(mRendererId);
-		vertexBuffer->Bind();
+		
+		glCreateBuffers(1, &mVertexBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
+		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 
 		std::vector<int> Counts;
-		GLsizei strides = 0;
+		uint32_t strides = 0;
 		for (auto c : layout)
 		{
 			if (int(c) >= 49 && int(c) <= 57)
@@ -42,7 +46,7 @@ namespace ChoicePlus
 			}
 		}
 
-		size_t offset = 0;
+		uint32_t offset = 0;
 		for (uint32_t i = 0; i < Counts.size(); i++)
 		{
 			glEnableVertexAttribArray(i);
@@ -50,16 +54,14 @@ namespace ChoicePlus
 			offset += Counts[i] * sizeof(float);
 		}
 
-		mVertexBuffer = vertexBuffer;
+		glBindVertexArray(0);
 	}
 
-	void VertexArray::SetIndexBuffer(const std::optional<std::shared_ptr<Buffer<BufferType::INDEX>>>& indexBuffer)
+	void VertexArray::IndexBuffer(const void* data, uint32_t count)
 	{
-		if (indexBuffer.has_value())
-		{
-			indexBuffer.value()->Bind();
-			mIndexBuffer = indexBuffer;
-		}
-		else mIndexBuffer = std::nullopt;
+		mIndicesCount = count;
+		glCreateBuffers(1, &mIndexBuffer);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), data, GL_STATIC_DRAW);
 	}
 }

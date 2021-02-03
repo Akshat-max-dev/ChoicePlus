@@ -26,24 +26,27 @@ namespace ChoicePlus
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		for (auto& object : with->GetSceneObjects())
 		{
-			auto model = object.GetProperty<Model>();
-			if (model)
+			if (object)
 			{
-				for (auto& mesh : model->GetMeshes())
+				auto model = object->GetProperty<Model>();
+				if (model)
 				{
-					mGeometryPass.second->Bind();
-					if (model->GetMaterials()[mesh.second]->mDiffuseMap)
-						model->GetMaterials()[mesh.second]->mDiffuseMap->Bind(0);
-					mGeometryPass.second->Int("gMaterial.Diffuse", 0);
-					if (model->GetMaterials()[mesh.second]->mNormalMap)
-						model->GetMaterials()[mesh.second]->mNormalMap->Bind(1);
-					mGeometryPass.second->Int("gMaterial.Normal", 1);
-					glm::mat4 s = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f));
-					mGeometryPass.second->Mat4("uViewProjection", to.first);
-					mGeometryPass.second->Mat4("uTransform", s);
-					mesh.first->Bind();
-					uint32_t count = mesh.first->GetIndexBuffer().value()->GetCount();
-					glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
+					for (auto& mesh : model->mMeshes)
+					{
+						mGeometryPass.second->Bind();
+						if (model->mMaterials[mesh.second]->mDiffuseMap)
+							model->mMaterials[mesh.second]->mDiffuseMap->Bind(0);
+						mGeometryPass.second->Int("gMaterial.Diffuse", 0);
+						if (model->mMaterials[mesh.second]->mNormalMap)
+							model->mMaterials[mesh.second]->mNormalMap->Bind(1);
+						mGeometryPass.second->Int("gMaterial.Normal", 1);
+						mGeometryPass.second->Mat4("uViewProjection", to.first);
+						auto transform = object->GetProperty<Transform>();
+						mGeometryPass.second->Mat4("uTransform", transform->GetTransform());
+						mesh.first->Bind();
+						uint32_t count = mesh.first->GetCount();
+						glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
+					}
 				}
 			}
 		}

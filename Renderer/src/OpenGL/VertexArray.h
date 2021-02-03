@@ -1,8 +1,6 @@
 #pragma once
 #include"c+pch.h"
 
-#include"Buffer.h"
-
 namespace ChoicePlus
 {
 	class VertexArray
@@ -14,16 +12,13 @@ namespace ChoicePlus
 		void Bind()const;
 		void UnBind()const;
 
-		const std::optional<std::shared_ptr<Buffer<BufferType::INDEX>>>& GetIndexBuffer()const { return mIndexBuffer; }
-		
-		void Setup(const std::shared_ptr<Buffer<BufferType::VERTEX>>& vertexBuffer, 
-			const std::string& layout);
-	
-		void SetIndexBuffer(const std::optional<std::shared_ptr<Buffer<BufferType::INDEX>>>& indexBuffer);
+		const size_t GetCount()const { return mIndicesCount; }
 
+		void VertexBuffer(const void* data, uint32_t size, std::string layout);
+		void IndexBuffer(const void* data, uint32_t count);
 	private:
 		uint32_t mRendererId;
-		std::shared_ptr<Buffer<BufferType::VERTEX>> mVertexBuffer;
-		std::optional<std::shared_ptr<Buffer<BufferType::INDEX>>> mIndexBuffer;
+		uint32_t mVertexBuffer, mIndexBuffer;
+		size_t mIndicesCount = 0;
 	};
 }
