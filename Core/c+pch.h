@@ -10,5 +10,6 @@
 #include<optional>
 #include<filesystem>
 #include<any>
+#include<variant>
 
 #include"src/Choice+Assert.h"

@@ -29,7 +29,7 @@ namespace ChoicePlus
 	{
 	public:
 		Texture(const std::string& srcCompressed);
-
+		~Texture() { glDeleteTextures(1, &mRendererId); }
 		const std::string& GetFilepath()const { return mSrcCompressed; }
 
 		void Bind(uint32_t slot)const { glActiveTexture(GL_TEXTURE0 + slot); glBindTexture(GL_TEXTURE_2D, mRendererId); }
@@ -92,5 +92,7 @@ namespace ChoicePlus
 				_target, static_cast<GLint>(Level), 0, 0, Extent.x, Extent.y,
 				_format.Internal, static_cast<GLsizei>(_texture.size(Level)), _texture.data(0, 0, Level));
 		}
+
+		_texture.clear();
 	}
 }
