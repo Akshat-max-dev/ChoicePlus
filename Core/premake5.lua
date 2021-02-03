@@ -27,7 +27,8 @@ project "Core"
 		"%{Dependency.assimp}",
 		"%{Dependency.tinyddsloader}",
 		"%{Dependency.compressonator}",
-		"%{Dependency.Gli}"
+		"%{Dependency.Gli}",
+		"%{Dependency.ImGuiFileDialogs}"
 	}
 
 	libdirs
@@ -48,8 +49,8 @@ project "Core"
 
 	defines
 	{
-		"GLFW_INCLUDE_NONE",
-		"_CRT_SECURE_NO_WARNINGS"
+		"GLFW_INCLUDE_NONE"
+		--"_CRT_SECURE_NO_WARNINGS"
 	}
 
 	filter "system:windows"

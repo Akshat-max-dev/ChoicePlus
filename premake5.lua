@@ -20,6 +20,7 @@ Dependency["assimp"] = "%{wks.location}/vendor/assimp/include"
 Dependency["tinyddsloader"] = "%{wks.location}/vendor/tinyddsloader"
 Dependency["compressonator"] = "%{wks.location}/vendor/compressonator/cmp_framework"
 Dependency["Gli"] = "%{wks.location}/vendor/Gli"
+Dependency["ImGuiFileDialogs"] = "%{wks.location}/vendor/ImGuiFileDialogs"
 
 group "Dependencies"
     include "vendor/GLFW"
