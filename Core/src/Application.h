@@ -28,6 +28,7 @@ namespace ChoicePlus
 		void GUI_End();
 		void GUI_Destroy();
 		void GUI_SetDarkcolorTheme();
+		void GUI_FileDialogs();
 	private:
 		std::unique_ptr<Window> mWindow = std::make_unique<Window>("Choice+", 1600, 900);
 		std::unique_ptr<Editor> mEditor = std::make_unique<Editor>();

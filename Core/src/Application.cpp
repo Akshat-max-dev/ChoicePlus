@@ -13,16 +13,9 @@
 #include"Debug.h"
 #endif
 
-//Temp
-#ifdef _WIN32
-#ifdef _WIN64
-#include<Windows.h>
-#endif
-#endif
-#include<commdlg.h>
-#include"FileDialogs.h"
-#define GLFW_EXPOSE_NATIVE_WIN32
-#include<GLFW/glfw3native.h>
+#include<ImGuiFileDialog.h>
+
+#pragma warning(disable : 4244) //Disable Type Conversion
 
 namespace ChoicePlus
 {
@@ -99,6 +92,8 @@ namespace ChoicePlus
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+
+		GUI_FileDialogs();
 	}
 
 	void Application::GUI_End()
@@ -161,6 +156,22 @@ namespace ChoicePlus
 		colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
 	}
 
+	void Application::GUI_FileDialogs()
+	{
+		if (ImGuiFileDialog::Instance()->Display("ImportModel", ImGuiWindowFlags_NoCollapse, ImVec2(800, 600)))
+		{
+			if (ImGuiFileDialog::Instance()->IsOk())
+			{
+				std::string dumpedmodelsrc = DumpModel(ImGuiFileDialog::Instance()->GetCurrentPath(), "E:/Choice+/Choice+/assets/models/");
+				SceneObject* object = new SceneObject();
+				object->AddProperty<Model>(Load(dumpedmodelsrc));
+				mEditor->ActiveScene()->AddObject(object);
+			}
+
+			ImGuiFileDialog::Instance()->Close();
+		}
+	}
+
 	void InputCallbacks::Enable()
 	{
 		GLFWwindow* window = Application::Get()->GetWindow()->GetNativeWindow();
@@ -208,49 +219,5 @@ namespace ChoicePlus
 		double xpos, ypos;
 		glfwGetCursorPos(Application::Get()->GetWindow()->GetNativeWindow(), &xpos, &ypos);
 		return { (float)xpos, (float)ypos };
-	}
-
-	std::optional<std::string> FileDialogs::OpenFile(const char* filter)
-	{
-		OPENFILENAMEA ofn;
-		CHAR szFile[260] = { 0 };
-		CHAR currentDir[256] = { 0 };
-		ZeroMemory(&ofn, sizeof(OPENFILENAME));
-		ofn.lStructSize = sizeof(OPENFILENAME);
-		ofn.hwndOwner = glfwGetWin32Window(Application::Get()->GetWindow()->GetNativeWindow());
-		ofn.lpstrFile = szFile;
-		ofn.nMaxFile = sizeof(szFile);
-		if (GetCurrentDirectoryA(256, currentDir))
-			ofn.lpstrInitialDir = currentDir;
-		ofn.lpstrFilter = filter;
-		ofn.nFilterIndex = 1;
-		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
-
-		if (GetOpenFileNameA(&ofn) == TRUE)
-			return std::optional<std::string>(ofn.lpstrFile);
-		return std::nullopt;
-	}
-
-	std::optional<std::string> FileDialogs::SaveFile(const char* filter)
-	{
-		OPENFILENAMEA ofn;
-		CHAR szFile[260] = { 0 };
-		CHAR currentDir[256] = { 0 };
-		ZeroMemory(&ofn, sizeof(OPENFILENAME));
-		ofn.lStructSize = sizeof(OPENFILENAME);
-		ofn.hwndOwner = glfwGetWin32Window(Application::Get()->GetWindow()->GetNativeWindow());
-		ofn.lpstrFile = szFile;
-		ofn.nMaxFile = sizeof(szFile);
-		if (GetCurrentDirectoryA(256, currentDir))
-			ofn.lpstrInitialDir = currentDir;
-		ofn.lpstrFilter = filter;
-		ofn.nFilterIndex = 1;
-		ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;
-
-		ofn.lpstrDefExt = strchr(filter, '\0') + 1;
-
-		if (GetSaveFileNameA(&ofn) == TRUE)
-			return std::optional<std::string>(ofn.lpstrFile);
-		return std::nullopt;
 	}
 }
