@@ -11,9 +11,9 @@ namespace ChoicePlus
 
 	VertexArray::~VertexArray()
 	{
+		glDeleteVertexArrays(1, &mRendererId);
 		glDeleteBuffers(1, &mVertexBuffer);
 		glDeleteBuffers(1, &mIndexBuffer);
-		glDeleteVertexArrays(1, &mRendererId);
 	}
 
 	void VertexArray::Bind() const
@@ -53,8 +53,6 @@ namespace ChoicePlus
 			glVertexAttribPointer(i, Counts[i], GL_FLOAT, GL_FALSE, strides, (const void*)offset);
 			offset += Counts[i] * sizeof(float);
 		}
-
-		glBindVertexArray(0);
 	}
 
 	void VertexArray::IndexBuffer(const void* data, uint32_t count)
