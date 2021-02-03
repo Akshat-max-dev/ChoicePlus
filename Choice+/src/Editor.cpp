@@ -6,6 +6,10 @@
 
 #include"src/Application.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4312)
+#pragma warning(disable : 4244)
+
 namespace ChoicePlus
 {
 	Editor::Editor()
@@ -15,8 +19,6 @@ namespace ChoicePlus
 
 		//Temp
 		mCamera = std::make_unique<EditorCamera>();
-
-		mSceneHiearchyPanel->ActiveScene(mActiveScene);
 	}
 
 	Editor::~Editor()
@@ -97,11 +99,9 @@ namespace ChoicePlus
 			ImGui::PopStyleVar();
 
 			ImGui::SetNextWindowDockID(mDockIds.left, ImGuiCond_Appearing);
-			mSceneHiearchyPanel->Draw();
+			mSceneHiearchyPanel->Draw(mActiveScene);
 			ImGui::SetNextWindowDockID(mDockIds.right, ImGuiCond_Appearing);
-			mSceneInspector->Draw();
-			ImGui::SetNextWindowDockID(mDockIds.bottom, ImGuiCond_Appearing);
-			mConsole->Draw();
+			mSceneInspector->Draw(mSceneHiearchyPanel->SelectedObject());
 		}
 		else
 		{
@@ -130,6 +130,9 @@ namespace ChoicePlus
 			ImGui::PopStyleVar();
 			ImGui::PopStyleVar(2);
 		}
+
+		ImGui::SetNextWindowDockID(mDockIds.bottom, ImGuiCond_Appearing);
+		mConsole->Draw();
 
 		ImGui::End();
 	}
@@ -167,3 +170,4 @@ namespace ChoicePlus
 	}
 
 }
+#pragma warning(pop)

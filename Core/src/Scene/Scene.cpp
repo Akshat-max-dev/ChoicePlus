@@ -6,13 +6,21 @@ namespace ChoicePlus
 	{
 	}
 
-	void Scene::AddObject(const SceneObject& object)
+	Scene::~Scene()
 	{
-		mSceneObjects.push_back(object);
+		for (auto& object : mSceneObjects)
+		{
+			if (object)delete object;
+		}
+	}
+
+	void Scene::AddObject(SceneObject* object)
+	{
+		mSceneObjects.emplace_back(object);
 	}
 
 	void Scene::DeleteObject(const uint32_t index)
 	{
-		mSceneObjects.erase(mSceneObjects.begin() + index);
+		if (mSceneObjects[index])delete mSceneObjects[index]; mSceneObjects[index] = nullptr;
 	}
 }

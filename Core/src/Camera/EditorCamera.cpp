@@ -44,7 +44,7 @@ namespace ChoicePlus
 		}
 		case MovementType::TRANSLATION:
 		{
-			float sensivity = 0.01f;
+			float sensivity = 0.001f;
 			mFocus += mRight * mDeltaX * sensivity;
 			mFocus += mUp * mDeltaY * sensivity;
 			mView = glm::lookAt(mFocus + mOffset, mFocus, mUp);

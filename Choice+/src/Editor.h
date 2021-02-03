@@ -28,6 +28,7 @@ namespace ChoicePlus
 		void Update();
 
 		std::unique_ptr<Camera>& CurrentCamera() { return mCamera; }
+		Scene* ActiveScene() { return mActiveScene; }
 	private:
 		void SetEditorLayout();
 	private:

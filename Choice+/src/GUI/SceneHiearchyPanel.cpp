@@ -1,6 +1,6 @@
 #include"SceneHiearchyPanel.h"
 
-#include"src/FileDialogs.h"
+#include <ImGuiFileDialog.h>
 
 namespace ChoicePlus
 {
@@ -9,32 +9,41 @@ namespace ChoicePlus
 		mSelectedObject = {};
 	}
 
-	void SceneHiearchyPanel::Draw()
+	void SceneHiearchyPanel::Draw(Scene* scene)
 	{
 		ImGui::Begin("Scene Hiearchy");
-		if (ImGui::CollapsingHeader(mScene->mName.c_str(), mBaseFlags))
+		if (ImGui::CollapsingHeader(scene->mName.c_str(), mBaseFlags))
 		{
-			for (uint32_t i = 0; i < mScene->mSceneObjects.size(); i++)
+			for (uint32_t i = 0; i < scene->mSceneObjects.size(); i++)
 			{
-				ImGuiTreeNodeFlags ParentFlags = (i == mSelected) ? ImGuiTreeNodeFlags_Selected : 0;
-				ParentFlags |= ImGuiTreeNodeFlags_Leaf;
-				if (ImGui::TreeNodeEx(mScene->mSceneObjects[i].Name().c_str(), ParentFlags))
+				if (scene->mSceneObjects[i])
 				{
-					if (ImGui::IsItemClicked())
+					ImGuiTreeNodeFlags ParentFlags = (i == mSelected) ? ImGuiTreeNodeFlags_Selected : 0;
+					ParentFlags |= ImGuiTreeNodeFlags_Leaf;
+					if (ImGui::TreeNodeEx(scene->mSceneObjects[i]->Name().c_str(), ParentFlags))
 					{
-						mSelected = i;
-						mSelectedObject = mScene->mSceneObjects[i];
+						if (ImGui::IsItemClicked())
+						{
+							mSelected = i;
+							mSelectedObject.emplace(scene->mSceneObjects[i]);
+						}
+						ImGui::TreePop();
 					}
-					ImGui::TreePop();
-				}
-				if (ImGui::BeginPopupContextItem())
-				{
-					if (ImGui::MenuItem("Delete"))
+					if (ImGui::BeginPopupContextItem())
 					{
-						mScene->DeleteObject(i);
-						ImGui::CloseCurrentPopup();
+						if (ImGui::MenuItem("Delete"))
+						{
+							scene->DeleteObject(i);
+							mSelectedObject.reset();
+							ImGui::CloseCurrentPopup();
+						}
+						if (ImGui::MenuItem("Deselect"))
+						{
+							mSelected = -1;
+							mSelectedObject.reset();
+						}
+						ImGui::EndPopup();
 					}
-					ImGui::EndPopup();
 				}
 			}
 		}
@@ -45,16 +54,7 @@ namespace ChoicePlus
 			{
 				if (ImGui::MenuItem("Import"))
 				{
-					std::optional<std::string> openfile = FileDialogs::OpenFile("All Files");
-					if (openfile.has_value())
-					{
-						std::string dumpedmodelsrc = DumpModel(openfile.value(), "E:/Choice+/Choice+/assets/models/");
-						Model model;
-						model.Load(dumpedmodelsrc);
-						SceneObject sceneobject;
-						sceneobject.AddProperty<Model>(model);
-						mScene->AddObject(sceneobject);
-					}					
+					ImGuiFileDialog::Instance()->OpenDialog("ImportModel", "Import Model", ".obj,.fbx", ".");					
 				}
 				ImGui::EndMenu();
 			}
@@ -63,10 +63,4 @@ namespace ChoicePlus
 
 		ImGui::End();
 	}
-
-	void SceneHiearchyPanel::ActiveScene(Scene* scene)
-	{
-		mScene = scene;
-	}
-
 }

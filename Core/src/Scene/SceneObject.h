@@ -12,26 +12,33 @@ namespace ChoicePlus
 	class SceneObject
 	{
 	public:
+		~SceneObject()
+		{
+			if (mModelProp.has_value())if (mModelProp.value())delete mModelProp.value();
+			if (mTransformProp.has_value())if (mTransformProp.value())delete mTransformProp.value();
+		}
 		const std::string& Name()const { return mName; }
 
 		template<typename T>
-		void AddProperty(const T& property_p) { static_assert(false); }
+		void AddProperty(T* property_p) { static_assert(false); }
 
 		template<>
-		void AddProperty<Model>(const Model& model)
+		void AddProperty<Model>(Model* model)
 		{
-			if (!HasProperty("Model"))
+			if (!mModelProp.has_value())
 			{
-				mName = model.Name();
-				mProperties.insert({ "Model", model });
+				mModelProp = { model };
+				mName = mModelProp.value()->mName;
+				Transform* transform = new Transform();
+				AddProperty<Transform>(transform);
 			}
 			else CONSOLE("Property Already Exists{e}");
 		}
 
 		template<>
-		void AddProperty<Transform>(const Transform& transform)
+		void AddProperty<Transform>(Transform* transform)
 		{
-			if (!HasProperty("Transform"))mProperties.insert({ "Transform", transform });
+			if (!mTransformProp.has_value())mTransformProp = { transform };
 			else CONSOLE("Property Already Exists{e}");
 		}
 
@@ -41,28 +48,20 @@ namespace ChoicePlus
 		template<>
 		Model* GetProperty<Model>()
 		{
-			auto it = mProperties.find("Model");
-			if (it != mProperties.end())return std::any_cast<Model>(&it->second);
+			if (mModelProp.has_value())if (mModelProp.value()) { return mModelProp.value(); }
 			return nullptr;
 		}
 
 		template<> 
 		Transform* GetProperty<Transform>()
 		{
-			auto it = mProperties.find("Transform");
-			if (it != mProperties.end())return std::any_cast<Transform>(&it->second);
+			if (mTransformProp.has_value())if (mTransformProp.value()) { return mTransformProp.value(); }
 			return nullptr;
 		}
 	private:
-		bool HasProperty(const std::string& of)
-		{
-			if (mProperties.find(of) != mProperties.end())
-				return true;
-			return false;
-		}
-	private:
-		std::string mName = "Object";
-		std::map<std::string, std::any> mProperties;
+		std::string mName = "";
+		std::optional<Model*> mModelProp;
+		std::optional<Transform*> mTransformProp;
 	};
 
 }
