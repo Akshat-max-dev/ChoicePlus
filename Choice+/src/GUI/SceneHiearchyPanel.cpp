@@ -2,6 +2,8 @@
 
 #include <ImGuiFileDialog.h>
 
+#include"src/Input.h"
+
 namespace ChoicePlus
 {
 	SceneHiearchyPanel::SceneHiearchyPanel()
@@ -47,6 +49,7 @@ namespace ChoicePlus
 									mSelectedObject.reset();
 									ImGui::CloseCurrentPopup();
 								}
+								if (ImGui::MenuItem("Rename"))mRenameSceneObjectModal = true;
 								ImGui::EndPopup();
 							}
 						}
@@ -66,9 +69,52 @@ namespace ChoicePlus
 					}
 					ImGui::EndMenu();
 				}
+				if (ImGui::MenuItem("Rename"))
+				{
+					mRenameSceneModal = true;
+				}
 				ImGui::EndPopup();
 			}
 		}
+
+		if (mRenameSceneModal || mRenameSceneObjectModal)
+		{
+			ImGui::OpenPopup("Rename");
+			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+			ImGui::SetNextWindowSize({ 333.0f, 97.0f }, ImGuiCond_Appearing);
+			ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, { 0.5f, 0.5f });
+			if (ImGui::BeginPopupModal("Rename", NULL, ImGuiWindowFlags_NoResize))
+			{
+				ImGui::Text("Enter Name:");
+				ImGui::SameLine();
+				static char buf[32] = "";
+				ImGui::InputText("##InputText", buf, 32);
+				ImGui::Separator();
+				if (ImGui::Button("Rename") || Input::IsKeyPressed(GLFW_KEY_ENTER))
+				{
+					if (mRenameSceneModal)
+					{
+						if (strlen(buf) == 0) { CONSOLE("Scene Name Can't Be Empty{e}"); }
+						else { scene->mName = buf; }
+						mRenameSceneModal = false;
+					}
+					else if (mRenameSceneObjectModal)
+					{
+						if (strlen(buf) == 0) { CONSOLE("Scene Object Name Can't Be Empty{e}"); }
+						else { mSelectedObject.value()->Name(buf); }
+						mRenameSceneObjectModal = false;
+					}
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Cancel") || Input::IsKeyPressed(GLFW_KEY_ESCAPE))
+				{
+					mRenameSceneModal = false;
+					mRenameSceneObjectModal = false;
+				}
+				ImGui::EndPopup();
+			}
+		}
+
 		ImGui::End();
 	}
 }

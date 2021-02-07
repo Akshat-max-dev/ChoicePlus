@@ -79,7 +79,7 @@ namespace ChoicePlus
 				if (ImGui::MenuItem("Save Scene"))
 				{
 					std::unique_ptr<SceneContainer> scenecontainer = std::make_unique<SceneContainer>();
-					std::string scenepath = "E:/Choice+/Choice+/assets/" + mActiveScene->Name() + ".cpscene";
+					std::string scenepath = "E:/Choice+/Choice+/assets/scenes" + mActiveScene->Name() + ".cpscene";
 					scenecontainer->ContainScene(mActiveScene, scenepath);
 				}
 				if (ImGui::MenuItem("Load Scene"))

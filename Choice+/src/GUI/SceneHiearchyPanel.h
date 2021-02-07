@@ -24,5 +24,7 @@ namespace ChoicePlus
 		ImGuiTreeNodeFlags mBaseFlags = ImGuiTreeNodeFlags_CollapsingHeader | ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnArrow;
 		int mSelected = -1;
 		std::optional<SceneObject*> mSelectedObject;
+		bool mRenameSceneModal = false;
+		bool mRenameSceneObjectModal = false;
 	};
 }
