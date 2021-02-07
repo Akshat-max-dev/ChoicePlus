@@ -29,6 +29,7 @@ namespace ChoicePlus
 
 		std::unique_ptr<Camera>& CurrentCamera() { return mCamera; }
 		Scene* ActiveScene() { return mActiveScene; }
+		void ActiveScene(Scene* scene) { delete mActiveScene; mActiveScene = scene; }
 	private:
 		void SetEditorLayout();
 	private:
@@ -60,5 +61,6 @@ namespace ChoicePlus
 			uint32_t center = 0;
 		};
 		DockIds mDockIds;
+		bool mNewSceneModal = false;
 	};
 }

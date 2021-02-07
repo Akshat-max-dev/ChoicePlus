@@ -5,6 +5,9 @@
 #include<imgui_internal.h>
 
 #include"src/Application.h"
+#include"src/Scene/SceneContainer.h"
+
+#include<ImGuiFileDialog.h>
 
 #pragma warning(push)
 #pragma warning(disable : 4312)
@@ -15,8 +18,7 @@ namespace ChoicePlus
 	Editor::Editor()
 	{
 		mPipeline->Init();
-		mActiveScene = new Scene("Choice+");
-
+		mActiveScene = {};
 		//Temp
 		mCamera = std::make_unique<EditorCamera>();
 	}
@@ -70,6 +72,21 @@ namespace ChoicePlus
 		{
 			if (ImGui::BeginMenu("File"))
 			{
+				if (ImGui::MenuItem("New Scene"))
+				{
+					mNewSceneModal = true;
+				}
+				if (ImGui::MenuItem("Save Scene"))
+				{
+					std::unique_ptr<SceneContainer> scenecontainer = std::make_unique<SceneContainer>();
+					std::string scenepath = "E:/Choice+/Choice+/assets/" + mActiveScene->Name() + ".cpscene";
+					scenecontainer->ContainScene(mActiveScene, scenepath);
+				}
+				if (ImGui::MenuItem("Load Scene"))
+				{
+					ImGuiFileDialog::Instance()->SetExtentionInfos(".cpscene", ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
+					ImGuiFileDialog::Instance()->OpenModal("LoadScene", "Load Scene", ".cpscene", ".");
+				}
 				ImGui::EndMenu();
 			}
 
@@ -78,6 +95,34 @@ namespace ChoicePlus
 
 		if (!mViewportFullscreen)
 		{
+			if (mNewSceneModal)
+			{
+				ImGui::OpenPopup("Create New Scene");
+				ImVec2 center = viewport->GetCenter();
+				ImGui::SetNextWindowSize({ 333.0f, 97.0f }, ImGuiCond_Appearing);
+				ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, { 0.5f, 0.5f });
+				if (ImGui::BeginPopupModal("Create New Scene", NULL, ImGuiWindowFlags_NoResize))
+				{
+					ImGui::Text("Scene Name:");
+					ImGui::SameLine();
+					static char buf[32] = "";
+					ImGui::InputText("##SceneName", buf, 32);
+					ImGui::Separator();
+					if (ImGui::Button("Create") || Input::IsKeyPressed(GLFW_KEY_ENTER))
+					{
+						if (strlen(buf) == 0) { CONSOLE("Scene Name Can't Be Empty{e}"); }
+						else { delete mActiveScene; mActiveScene = new Scene(buf); }
+						mNewSceneModal = false;
+					}
+					ImGui::SameLine();
+					if (ImGui::Button("Cancel") || Input::IsKeyPressed(GLFW_KEY_ESCAPE))
+					{
+						mNewSceneModal = false;
+					}
+					ImGui::EndPopup();
+				}
+			}
+
 			ImGui::SetNextWindowDockID(mDockIds.root, ImGuiCond_Appearing);
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 			ImGui::Begin("Viewport");
@@ -140,7 +185,10 @@ namespace ChoicePlus
 	void Editor::Update()
 	{
 		mCamera->Update();
-		mPipeline->Update(mActiveScene, mCamera->CameraData());
+		if (mActiveScene)
+		{
+			mPipeline->Update(mActiveScene, mCamera->CameraData());
+		}
 	}
 
 	void Editor::SetEditorLayout()

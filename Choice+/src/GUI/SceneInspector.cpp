@@ -74,7 +74,14 @@ namespace ChoicePlus
 	template<>
 	void DrawProperty<Transform>(Transform* transform)
 	{
-		TransformUI("Position", transform->Position, 0.0f);
+		if (ImGui::CollapsingHeader("Tranform", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnArrow))
+		{
+			TransformUI("Position", transform->Position, 0.0f);
+			glm::vec3 rotation = glm::degrees(transform->Rotation);
+			TransformUI("Rotation", rotation, 0.0f);
+			transform->Rotation = glm::radians(rotation);
+			TransformUI("Scale", transform->Scale, 1.0f);
+		}
 	}
 
 	void SceneInspector::Draw(SceneObject* sceneobject)
@@ -82,10 +89,6 @@ namespace ChoicePlus
 		ImGui::Begin("Scene Inspector");
 		if (sceneobject)
 		{
-			ImGui::Text(sceneobject->Name().c_str());
-			ImGui::Text("");
-			ImGui::Text("");
-			ImGui::Separator();
 			auto transform = sceneobject->GetProperty<Transform>();
 			if (transform)DrawProperty<Transform>(transform);
 		}

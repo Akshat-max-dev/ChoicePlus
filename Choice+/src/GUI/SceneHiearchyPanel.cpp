@@ -12,55 +12,63 @@ namespace ChoicePlus
 	void SceneHiearchyPanel::Draw(Scene* scene)
 	{
 		ImGui::Begin("Scene Hiearchy");
-		if (ImGui::CollapsingHeader(scene->mName.c_str(), mBaseFlags))
+		if (scene)
 		{
-			for (uint32_t i = 0; i < scene->mSceneObjects.size(); i++)
+			if (ImGui::CollapsingHeader(scene->mName.c_str(), mBaseFlags))
 			{
-				if (scene->mSceneObjects[i])
+				for (uint32_t i = 0; i < scene->mSceneObjects.size(); i++)
 				{
-					ImGuiTreeNodeFlags ParentFlags = (i == mSelected) ? ImGuiTreeNodeFlags_Selected : 0;
-					ParentFlags |= ImGuiTreeNodeFlags_Leaf;
-					if (ImGui::TreeNodeEx(scene->mSceneObjects[i]->Name().c_str(), ParentFlags))
+					if (scene->mSceneObjects[i])
 					{
-						if (ImGui::IsItemClicked())
+						ImGuiTreeNodeFlags ParentFlags = (i == mSelected) ? ImGuiTreeNodeFlags_Selected : 0;
+						ParentFlags |= ImGuiTreeNodeFlags_Leaf;
+						if (ImGui::TreeNodeEx(scene->mSceneObjects[i]->Name().c_str(), ParentFlags))
 						{
-							mSelected = i;
-							mSelectedObject.emplace(scene->mSceneObjects[i]);
+							if (ImGui::IsItemClicked())
+							{
+								mSelected = i;
+								mSelectedObject = { scene->mSceneObjects[i] };
+							}
+							ImGui::TreePop();
 						}
-						ImGui::TreePop();
-					}
-					if (ImGui::BeginPopupContextItem())
-					{
-						if (ImGui::MenuItem("Delete"))
+						if (mSelected == i)
 						{
-							scene->DeleteObject(i);
-							mSelectedObject.reset();
-							ImGui::CloseCurrentPopup();
+							if (ImGui::BeginPopupContextItem())
+							{
+								if (ImGui::MenuItem("Delete"))
+								{
+									scene->DeleteObject(i);
+									mSelectedObject.reset();
+									ImGui::CloseCurrentPopup();
+								}
+								if (ImGui::MenuItem("Deselect"))
+								{
+									mSelected = -1;
+									mSelectedObject.reset();
+									ImGui::CloseCurrentPopup();
+								}
+								ImGui::EndPopup();
+							}
 						}
-						if (ImGui::MenuItem("Deselect"))
-						{
-							mSelected = -1;
-							mSelectedObject.reset();
-						}
-						ImGui::EndPopup();
 					}
 				}
 			}
-		}
 
-		if (ImGui::BeginPopupContextWindow(0, 1, false))
-		{
-			if (ImGui::BeginMenu("Add Model"))
+			if (ImGui::BeginPopupContextWindow(0, 1, false))
 			{
-				if (ImGui::MenuItem("Import"))
+				if (ImGui::BeginMenu("Add Model"))
 				{
-					ImGuiFileDialog::Instance()->OpenDialog("ImportModel", "Import Model", ".obj,.fbx", ".");					
-				}
-				ImGui::EndMenu();
-			}
-			ImGui::EndPopup();
-		}
+					if (ImGui::MenuItem("Import"))
+					{
+						ImGuiFileDialog::Instance()->SetExtentionInfos(".obj", ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
+						ImGuiFileDialog::Instance()->OpenModal("ImportModel", "Import Model", ".obj,.fbx", ".");
 
+					}
+					ImGui::EndMenu();
+				}
+				ImGui::EndPopup();
+			}
+		}
 		ImGui::End();
 	}
 }
