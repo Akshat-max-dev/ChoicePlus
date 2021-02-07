@@ -105,7 +105,7 @@ namespace IGFD
 #define cancelButtonString "Cancel"
 #endif // cancelButtonString
 #ifndef resetButtonString
-#define resetButtonString "R"
+#define resetButtonString "Reset"
 #endif // resetButtonString
 #ifndef drivesButtonString
 #define drivesButtonString "Drives"
@@ -1225,17 +1225,11 @@ namespace IGFD
 
 		static ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg |
 			ImGuiTableFlags_Hideable | ImGuiTableFlags_ScrollY |
-			ImGuiTableFlags_NoHostExtendY
-#ifndef USE_CUSTOM_SORTING_ICON
-			| ImGuiTableFlags_Sortable
-#endif // USE_CUSTOM_SORTING_ICON
-			;
-		if (ImGui::BeginTable("##fileTable", 3, flags, vSize))
+			ImGuiTableFlags_NoHostExtendY;
+		if (ImGui::BeginTable("##fileTable", 2, flags, vSize))
 		{
 			ImGui::TableSetupScrollFreeze(0, 1); // Make header always visible
 			ImGui::TableSetupColumn(m_HeaderFileName.c_str(), ImGuiTableColumnFlags_WidthStretch, -1, 0);
-			ImGui::TableSetupColumn(m_HeaderFileSize.c_str(), ImGuiTableColumnFlags_WidthFixed, -1, 1);
-			ImGui::TableSetupColumn(m_HeaderFileDate.c_str(), ImGuiTableColumnFlags_WidthFixed, -1, 2);
 
 #ifndef USE_CUSTOM_SORTING_ICON
 			// Sort our data if sort specs have been changed!
@@ -1245,11 +1239,6 @@ namespace IGFD
 				{
 					if (sorts_specs->Specs->ColumnUserID == 0)
 						SortFields(SortingFieldEnum::FIELD_FILENAME, true);
-					else if (sorts_specs->Specs->ColumnUserID == 1)
-						SortFields(SortingFieldEnum::FIELD_SIZE, true);
-					else if (sorts_specs->Specs->ColumnUserID == 2)
-						SortFields(SortingFieldEnum::FIELD_DATE, true);
-
 					sorts_specs->SpecsDirty = false;
 				}
 			}
@@ -1345,17 +1334,6 @@ namespace IGFD
 									SelectFileName(infos);
 								}
 							}
-						}
-						if (ImGui::TableSetColumnIndex(1)) // second column
-						{
-							if (infos.type != 'd')
-							{
-								ImGui::Text("%s ", infos.formatedFileSize.c_str()); //-V111
-							}
-						}
-						if (ImGui::TableSetColumnIndex(2)) // third column
-						{
-							ImGui::Text("%s", infos.fileModifDate.c_str()); //-V111
 						}
 						if (showColor)
 							ImGui::PopStyleColor();
