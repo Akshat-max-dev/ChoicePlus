@@ -3,6 +3,8 @@
 #include<imgui.h>
 #include<imgui_internal.h>
 
+#include"FontAwesome.h"
+
 namespace ChoicePlus
 {
 
@@ -86,7 +88,7 @@ namespace ChoicePlus
 
 	void SceneInspector::Draw(SceneObject* sceneobject)
 	{
-		ImGui::Begin("Scene Inspector");
+		ImGui::Begin(ICON_FK_INFO_CIRCLE " Scene Inspector");
 		if (sceneobject)
 		{
 			auto transform = sceneobject->GetProperty<Transform>();

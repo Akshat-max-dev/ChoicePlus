@@ -5,6 +5,7 @@
 #include"GUI/Console.h"
 #include"GUI/SceneHiearchyPanel.h"
 #include"GUI/SceneInspector.h"
+#include"GUI/ProjectExplorer.h"
 
 #include"OpenGL/Pipeline.h"
 #include"OpenGL/DeferredShading/DeferredPipeline.h"
@@ -15,6 +16,7 @@ namespace ChoicePlus
 	class SceneHiearchyPanel;
 	class SceneInspector;
 	class Camera;
+	class ProjectExplorer;
 }
 
 namespace ChoicePlus
@@ -38,6 +40,7 @@ namespace ChoicePlus
 		std::unique_ptr<SceneHiearchyPanel> mSceneHiearchyPanel = std::make_unique<SceneHiearchyPanel>();
 		std::unique_ptr<SceneInspector> mSceneInspector = std::make_unique<SceneInspector>();
 		std::unique_ptr<Pipeline> mPipeline = std::make_unique<DeferredPipeline>();
+		std::unique_ptr<ProjectExplorer> mProjectExplorer = std::make_unique<ProjectExplorer>();
 		Scene* mActiveScene;
 	private:
 		ImGuiWindowFlags mFullscreenWindowFlags = ImGuiWindowFlags_NoBringToFrontOnFocus | 

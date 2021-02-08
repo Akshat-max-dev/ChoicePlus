@@ -9,6 +9,8 @@
 
 #include<ImGuiFileDialog.h>
 
+#include"GUI/FontAwesome.h"
+
 #pragma warning(push)
 #pragma warning(disable : 4312)
 #pragma warning(disable : 4244)
@@ -143,6 +145,8 @@ namespace ChoicePlus
 			ImGui::End();
 			ImGui::PopStyleVar();
 
+			ImGui::SetNextWindowDockID(mDockIds.bottom, ImGuiCond_Appearing);
+			mProjectExplorer->Draw();
 			ImGui::SetNextWindowDockID(mDockIds.left, ImGuiCond_Appearing);
 			mSceneHiearchyPanel->Draw(mActiveScene);
 			ImGui::SetNextWindowDockID(mDockIds.right, ImGuiCond_Appearing);
@@ -210,6 +214,7 @@ namespace ChoicePlus
 				0.3f, NULL, &mDockIds.root);
 
 			ImGui::DockBuilderDockWindow("Viewport", mDockIds.root);
+			ImGui::DockBuilderDockWindow("Project Explorer", mDockIds.bottom);
 			ImGui::DockBuilderDockWindow("Console", mDockIds.bottom);
 			ImGui::DockBuilderDockWindow("Scene Hierarchy", mDockIds.left);
 			ImGui::DockBuilderDockWindow("Scene Inspector", mDockIds.right);

@@ -70,6 +70,8 @@ SOFTWARE.
 #include <algorithm>
 #include <iostream>
 
+#include"../../Choice+/src/GUI/FontAwesome.h"
+
 namespace IGFD
 {
 	// float comparisons
@@ -105,22 +107,22 @@ namespace IGFD
 #define cancelButtonString "Cancel"
 #endif // cancelButtonString
 #ifndef resetButtonString
-#define resetButtonString "Reset"
+#define resetButtonString ICON_FK_UNDO
 #endif // resetButtonString
 #ifndef drivesButtonString
 #define drivesButtonString "Drives"
 #endif // drivesButtonString
 #ifndef searchString
-#define searchString "Search :"
+#define searchString ICON_FK_SEARCH
 #endif // searchString
 #ifndef dirEntryString
-#define dirEntryString "[Dir]"
+#define dirEntryString ICON_FK_FOLDER
 #endif // dirEntryString
 #ifndef linkEntryString
 #define linkEntryString "[Link]"
 #endif // linkEntryString
 #ifndef fileEntryString
-#define fileEntryString "[File]"
+#define fileEntryString ICON_FK_FILE
 #endif // fileEntryString
 #ifndef fileNameString
 #define fileNameString "File Name :"
@@ -1226,7 +1228,7 @@ namespace IGFD
 		static ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg |
 			ImGuiTableFlags_Hideable | ImGuiTableFlags_ScrollY |
 			ImGuiTableFlags_NoHostExtendY;
-		if (ImGui::BeginTable("##fileTable", 2, flags, vSize))
+		if (ImGui::BeginTable("##fileTable", 1, flags, vSize))
 		{
 			ImGui::TableSetupScrollFreeze(0, 1); // Make header always visible
 			ImGui::TableSetupColumn(m_HeaderFileName.c_str(), ImGuiTableColumnFlags_WidthStretch, -1, 0);

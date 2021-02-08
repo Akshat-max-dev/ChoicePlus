@@ -9,6 +9,8 @@
 #include<ImGuiFileDialog.h>
 #include"src/Scene/SceneContainer.h"
 
+#include"FontAwesome.h"
+
 namespace ChoicePlus
 {
 	Gui::Gui()
@@ -19,8 +21,11 @@ namespace ChoicePlus
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
+		static const ImWchar icons_ranges[] = { ICON_MIN_FK, ICON_MAX_FK, 0 };
+		ImFontConfig config;
+		config.MergeMode = true;
 		io.FontDefault = io.Fonts->AddFontFromFileTTF("E:/Choice+/Choice+/assets/fonts/Roboto-Regular.ttf", 18.0f);
-
+		io.Fonts->AddFontFromFileTTF("E:/Choice+/Choice+/assets/fonts/fontawesome-webfont.ttf", 18.0f, &config, icons_ranges);
 		ImGui::StyleColorsDark();
 
 		ImGuiStyle& style = ImGui::GetStyle();
@@ -69,7 +74,7 @@ namespace ChoicePlus
 
 	void Gui::FileDialogsModal()
 	{
-		if (ImGuiFileDialog::Instance()->Display("ImportModel", ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove, ImVec2(800, 600)))
+		if (ImGuiFileDialog::Instance()->Display("ImportModel", ImGuiWindowFlags_NoCollapse, ImVec2(800, 600)))
 		{
 			if (ImGuiFileDialog::Instance()->IsOk())
 			{
@@ -85,7 +90,7 @@ namespace ChoicePlus
 			ImGuiFileDialog::Instance()->Close();
 		}
 
-		if (ImGuiFileDialog::Instance()->Display("LoadScene", ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove, ImVec2(800, 600)))
+		if (ImGuiFileDialog::Instance()->Display("LoadScene", ImGuiWindowFlags_NoCollapse, ImVec2(800, 600)))
 		{
 			if (ImGuiFileDialog::Instance()->IsOk())
 			{

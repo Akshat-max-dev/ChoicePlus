@@ -3,6 +3,7 @@
 #include <ImGuiFileDialog.h>
 
 #include"src/Input.h"
+#include"FontAwesome.h"
 
 namespace ChoicePlus
 {
@@ -13,7 +14,7 @@ namespace ChoicePlus
 
 	void SceneHiearchyPanel::Draw(Scene* scene)
 	{
-		ImGui::Begin("Scene Hiearchy");
+		ImGui::Begin(ICON_FK_LIST " Scene Hiearchy");
 		if (scene)
 		{
 			if (ImGui::CollapsingHeader(scene->mName.c_str(), mBaseFlags))
@@ -101,7 +102,18 @@ namespace ChoicePlus
 					else if (mRenameSceneObjectModal)
 					{
 						if (strlen(buf) == 0) { CONSOLE("Scene Object Name Can't Be Empty{e}"); }
-						else { mSelectedObject.value()->Name(buf); }
+						else 
+						{ 
+							mSelectedObject.value()->Name(buf); 
+							auto model = mSelectedObject.value()->GetProperty<Model>();
+							if (model)
+							{
+								//Temp code
+								std::string renameSrcFile = model->mSrcFile.substr(0, model->mSrcFile.find_last_of('/') + 1) + buf + ".cpmodel";
+								rename(model->mSrcFile.c_str(), renameSrcFile.c_str());
+								model->mSrcFile = renameSrcFile;
+							}
+						}
 						mRenameSceneObjectModal = false;
 					}
 				}
