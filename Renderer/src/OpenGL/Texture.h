@@ -16,6 +16,8 @@ namespace ChoicePlus
 	const std::string CompressTexture(const std::string& srcFile, std::string& dstDirectory,
 		BlockCompressionFormat format, bool generateMips);
 
+	const uint32_t LoadCompressedTexture2D(const std::string& srcCompressed);
+
 	enum class TextureTypes
 	{
 		TWO_D = 0, CUBEMAP = 1
@@ -58,6 +60,7 @@ namespace ChoicePlus
 				msg.append("{e}");
 				CONSOLE(msg.c_str());
 			}
+			_texture.clear();
 			return;
 		}
 

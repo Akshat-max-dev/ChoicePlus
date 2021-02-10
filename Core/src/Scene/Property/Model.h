@@ -11,18 +11,27 @@
 
 #include"OpenGL/Texture.h"
 
+#include<glm/glm.hpp>
+#include<glad/glad.h>
+
 namespace ChoicePlus
 {
 	struct Material
 	{
 		~Material()
 		{
-			delete mDiffuseMap;
-			delete mNormalMap;
+			glDeleteTextures(1, &mDiffuseMap.first);
+			glDeleteTextures(1, &mNormalMap.first);
 		}
 
-		Texture<TextureTypes::TWO_D>* mDiffuseMap;
-		Texture<TextureTypes::TWO_D>* mNormalMap;
+		void Bind(glm::uvec2 slots)const
+		{
+			glActiveTexture(GL_TEXTURE0 + slots.x); glBindTexture(GL_TEXTURE_2D, mDiffuseMap.first);
+			glActiveTexture(GL_TEXTURE0 + slots.y); glBindTexture(GL_TEXTURE_2D, mNormalMap.first);
+		}
+
+		std::pair<uint32_t, std::string> mDiffuseMap;
+		std::pair<uint32_t, std::string> mNormalMap;
 	};
 
 	struct DumpableMeshData
@@ -43,7 +52,7 @@ namespace ChoicePlus
 		~Model();
 
 		std::string mName;
-		std::vector<std::shared_ptr<Material>> mMaterials;
+		std::vector<Material*> mMaterials;
 		std::vector<std::pair<std::shared_ptr<VertexArray>, uint32_t>> mMeshes;
 		std::string mSrcFile;
 	};

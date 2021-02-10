@@ -9,8 +9,6 @@
 #include"Debug.h"
 #endif
 
-#pragma warning(disable : 4244) //Disable Type Conversion
-
 namespace ChoicePlus
 {
 	Application* Application::sInstance = nullptr;

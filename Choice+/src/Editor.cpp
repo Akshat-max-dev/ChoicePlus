@@ -11,10 +11,6 @@
 
 #include"GUI/FontAwesome.h"
 
-#pragma warning(push)
-#pragma warning(disable : 4312)
-#pragma warning(disable : 4244)
-
 namespace ChoicePlus
 {
 	Editor::Editor()
@@ -105,7 +101,7 @@ namespace ChoicePlus
 				mViewportSize.x = viewportSize.x;
 				mViewportSize.y = viewportSize.y;
 			}
-			void* Id = (void*)mPipeline->FinalResult();
+			void* Id = (void*)(uintptr_t)mPipeline->FinalResult();
 			ImGui::Image(Id, ImVec2{ mViewportSize.x, mViewportSize.y }, ImVec2{ 0,1 }, ImVec2{ 1,0 });
 
 			ImGui::End();
@@ -138,7 +134,7 @@ namespace ChoicePlus
 				mViewportSize.x = viewportSize.x;
 				mViewportSize.y = viewportSize.y;
 			}
-			void* Id = (void*)mPipeline->FinalResult();
+			void* Id = (void*)(uintptr_t)mPipeline->FinalResult();
 			ImGui::Image(Id, ImVec2{ mViewportSize.x, mViewportSize.y }, ImVec2{ 0,1 }, ImVec2{ 1,0 });
 
 			ImGui::End();
@@ -166,8 +162,8 @@ namespace ChoicePlus
 			ImGui::DockBuilderRemoveNode(mDockIds.root);  // Clear out existing layout
 			ImGui::DockBuilderAddNode(mDockIds.root,
 				ImGuiDockNodeFlags_DockSpace);  // Add empty node
-			ImGui::DockBuilderSetNodeSize(mDockIds.root, ImVec2(Application::Get()->GetWindow()->GetWidth(),
-				Application::Get()->GetWindow()->GetHeight()));
+			ImGui::DockBuilderSetNodeSize(mDockIds.root, ImVec2((float)Application::Get()->GetWindow()->GetWidth(),
+				(float)Application::Get()->GetWindow()->GetHeight()));
 
 			mDockIds.right = ImGui::DockBuilderSplitNode(mDockIds.root, ImGuiDir_Right,
 				0.2f, NULL, &mDockIds.root);
@@ -262,4 +258,3 @@ namespace ChoicePlus
 	}
 
 }
-#pragma warning(pop)

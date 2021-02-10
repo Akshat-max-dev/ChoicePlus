@@ -50,7 +50,7 @@ namespace ChoicePlus
 		for (uint32_t i = 0; i < Counts.size(); i++)
 		{
 			glEnableVertexAttribArray(i);
-			glVertexAttribPointer(i, Counts[i], GL_FLOAT, GL_FALSE, strides, (const void*)offset);
+			glVertexAttribPointer(i, Counts[i], GL_FLOAT, GL_FALSE, strides, (const void*)(uintptr_t)offset);
 			offset += Counts[i] * sizeof(float);
 		}
 	}

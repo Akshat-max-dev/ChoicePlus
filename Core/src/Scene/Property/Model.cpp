@@ -233,21 +233,23 @@ namespace ChoicePlus
 
 		for (uint32_t i = 0; i < matSize; i++)
 		{
-			model->mMaterials[i] = std::make_shared<Material>();
+			model->mMaterials[i] = new Material();
 
 			uint32_t texdiffusesize;
 			fromFile.read((char*)&texdiffusesize, sizeof(texdiffusesize));
 			std::string diffusemap;
 			diffusemap.resize(texdiffusesize);
 			fromFile.read((char*)diffusemap.data(), texdiffusesize);
-			model->mMaterials[i]->mDiffuseMap = new Texture<TextureTypes::TWO_D>(diffusemap);
+			model->mMaterials[i]->mDiffuseMap.first = LoadCompressedTexture2D(diffusemap);
+			model->mMaterials[i]->mDiffuseMap.second = diffusemap;
 
 			uint32_t texnormalsize;
 			fromFile.read((char*)&texnormalsize, sizeof(texnormalsize));
 			std::string normalmap;
 			normalmap.resize(texnormalsize);
 			fromFile.read((char*)normalmap.data(), texnormalsize);
-			model->mMaterials[i]->mNormalMap = new Texture<TextureTypes::TWO_D>(normalmap);
+			model->mMaterials[i]->mNormalMap.first = LoadCompressedTexture2D(normalmap);
+			model->mMaterials[i]->mNormalMap.second = normalmap;
 		}
 
 		uint32_t meshSize;
@@ -284,6 +286,10 @@ namespace ChoicePlus
 
 	Model::~Model()
 	{
+		for (auto& mat : mMaterials)
+		{
+			delete mat;
+		}
 		mMaterials.clear();
 		mMeshes.clear();
 	}

@@ -34,17 +34,14 @@ namespace ChoicePlus
 					for (auto& mesh : model->mMeshes)
 					{
 						mGeometryPass.second->Bind();
-						if (model->mMaterials[mesh.second]->mDiffuseMap)
-							model->mMaterials[mesh.second]->mDiffuseMap->Bind(0);
+						model->mMaterials[mesh.second]->Bind({ 0, 1 });
 						mGeometryPass.second->Int("gMaterial.Diffuse", 0);
-						if (model->mMaterials[mesh.second]->mNormalMap)
-							model->mMaterials[mesh.second]->mNormalMap->Bind(1);
 						mGeometryPass.second->Int("gMaterial.Normal", 1);
 						mGeometryPass.second->Mat4("uViewProjection", to.first);
 						auto transform = object->GetProperty<Transform>();
 						mGeometryPass.second->Mat4("uTransform", transform->GetTransform());
 						mesh.first->Bind();
-						uint32_t count = mesh.first->GetCount();
+						uint32_t count = (uint32_t)mesh.first->GetCount();
 						glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
 					}
 				}
@@ -70,7 +67,7 @@ namespace ChoicePlus
 	DeferredGeometryCapture::~DeferredGeometryCapture()
 	{
 		FrameBuffer::Destroy();
-		glDeleteTextures(mGBuffer.size(), &mGBuffer[0]);
+		glDeleteTextures(static_cast<GLsizei>(mGBuffer.size()), &mGBuffer[0]);
 	}
 
 	void DeferredGeometryCapture::BindGBuffer(glm::uvec4 slots)
@@ -90,7 +87,7 @@ namespace ChoicePlus
 		if (mRendererId)
 		{
 			FrameBuffer::Destroy();
-			if (mGBuffer.size() != 0)glDeleteTextures(mGBuffer.size(), &mGBuffer[0]);
+			if (mGBuffer.size() != 0)glDeleteTextures(static_cast<GLsizei>(mGBuffer.size()), &mGBuffer[0]);
 		}
 
 		glCreateFramebuffers(1, &mRendererId);
