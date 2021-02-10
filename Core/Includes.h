@@ -5,5 +5,7 @@
 #include"src/Scene/Scene.h"
 #include"src/Camera/Camera.h"
 #include"src/Camera/EditorCamera.h"
+#include"src/Scene/SceneContainer.h"
+#include"src/Project/Project.h"
 
 #include"src/Log.h"

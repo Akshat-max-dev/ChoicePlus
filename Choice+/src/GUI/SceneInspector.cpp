@@ -88,7 +88,7 @@ namespace ChoicePlus
 
 	void SceneInspector::Draw(SceneObject* sceneobject)
 	{
-		ImGui::Begin(ICON_FK_INFO_CIRCLE " Scene Inspector");
+		ImGui::Begin(ICON_FK_INFO_CIRCLE);
 		if (sceneobject)
 		{
 			auto transform = sceneobject->GetProperty<Transform>();

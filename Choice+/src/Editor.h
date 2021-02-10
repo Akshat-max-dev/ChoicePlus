@@ -30,10 +30,12 @@ namespace ChoicePlus
 		void Update();
 
 		std::unique_ptr<Camera>& CurrentCamera() { return mCamera; }
-		Scene* ActiveScene() { return mActiveScene; }
-		void ActiveScene(Scene* scene) { delete mActiveScene; mActiveScene = scene; }
+		Scene* ActiveScene() { return mProjectExplorer->ActiveScene(); }
 	private:
 		void SetEditorLayout();
+		void NewProject();
+		void SaveProject();
+		void OpenProject();
 	private:
 		std::unique_ptr<Camera> mCamera;
 		std::unique_ptr<Console> mConsole = std::make_unique<Console>();
@@ -41,7 +43,7 @@ namespace ChoicePlus
 		std::unique_ptr<SceneInspector> mSceneInspector = std::make_unique<SceneInspector>();
 		std::unique_ptr<Pipeline> mPipeline = std::make_unique<DeferredPipeline>();
 		std::unique_ptr<ProjectExplorer> mProjectExplorer = std::make_unique<ProjectExplorer>();
-		Scene* mActiveScene;
+		Project* mActiveProject;
 	private:
 		ImGuiWindowFlags mFullscreenWindowFlags = ImGuiWindowFlags_NoBringToFrontOnFocus | 
 												  ImGuiWindowFlags_NoCollapse | 
@@ -64,6 +66,6 @@ namespace ChoicePlus
 			uint32_t center = 0;
 		};
 		DockIds mDockIds;
-		bool mNewSceneModal = false;
+		bool mNewProjectModal = false;
 	};
 }

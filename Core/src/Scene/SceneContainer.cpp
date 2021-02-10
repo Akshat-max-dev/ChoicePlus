@@ -6,19 +6,15 @@
 
 namespace ChoicePlus
 {
-	void SceneContainer::ContainScene(Scene* scene, const std::string& scenepath)
+	void SceneContainer::ContainScene(Scene* scene, const std::string& directory)
 	{
-		std::ofstream container(scenepath, std::ios::out | std::ios::binary);
+		std::ofstream container(directory + "\\" + scene->Name() + ".cpscene", std::ios::out | std::ios::binary);
 		if (!container.is_open() && container.bad())
 		{
 			std::string msg = "Failed to save scene " + scene->mName + "{e}";
 			CONSOLE(msg.c_str());
 			return;
 		}
-
-		uint32_t namesize = (uint32_t)scene->mName.size();
-		container.write((char*)&namesize, sizeof(namesize));
-		container.write((char*)scene->mName.data(), namesize);
 
 		uint32_t sceneobjectssize = (uint32_t)scene->mSceneObjects.size();
 		container.write((char*)&sceneobjectssize, sizeof(sceneobjectssize));
@@ -81,13 +77,12 @@ namespace ChoicePlus
 			return nullptr;
 		}
 
-		uint32_t namesize;
-		containedscene.read((char*)&namesize, sizeof(namesize));
-		std::string scenename;
-		scenename.resize(namesize);
-		containedscene.read((char*)scenename.data(), namesize);
-
+		std::string scenename = std::filesystem::path(scenepath).stem().string();
+		
 		Scene* scene = new Scene(scenename);
+
+		std::string directory = scenepath.substr(0, scenepath.find_last_of('\\') + 1);
+		scene->Directory(directory);
 
 		uint32_t objectssize;
 		containedscene.read((char*)&objectssize, sizeof(objectssize));

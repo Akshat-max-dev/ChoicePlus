@@ -11,8 +11,6 @@ namespace ChoicePlus
 		void Begin();
 		void End();
 	private:
-		void FileDialogsModal();
-	private:
 		void CustomDarkTheme();
 	};
 }

@@ -14,7 +14,7 @@ namespace ChoicePlus
 
 	void SceneHiearchyPanel::Draw(Scene* scene)
 	{
-		ImGui::Begin(ICON_FK_LIST " Scene Hiearchy");
+		ImGui::Begin(ICON_FK_LIST);
 		if (scene)
 		{
 			if (ImGui::CollapsingHeader(scene->mName.c_str(), mBaseFlags))
@@ -65,7 +65,7 @@ namespace ChoicePlus
 					if (ImGui::MenuItem("Import"))
 					{
 						ImGuiFileDialog::Instance()->SetExtentionInfos(".obj", ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
-						ImGuiFileDialog::Instance()->OpenModal("ImportModel", "Import Model", ".obj,.fbx", ".");
+						ImGuiFileDialog::Instance()->OpenModal("ImportModel", "Import Model", ".obj,.fbx", "");
 
 					}
 					ImGui::EndMenu();
@@ -76,6 +76,26 @@ namespace ChoicePlus
 				}
 				ImGui::EndPopup();
 			}
+		}
+
+		if (ImGuiFileDialog::Instance()->Display("ImportModel", ImGuiWindowFlags_NoCollapse, ImVec2(800, 600)))
+		{
+			if (ImGuiFileDialog::Instance()->IsOk())
+			{
+				if (!std::filesystem::exists(scene->Directory() + "Model"))
+				{
+					std::filesystem::create_directory(scene->Directory() + "Model");
+				}
+				std::string dumpedmodelsrc = DumpModel(ImGuiFileDialog::Instance()->GetFilePathName(), scene->Directory() + "Model\\");
+
+				SceneObject* object = new SceneObject();
+				object->AddProperty<Model>(Load(dumpedmodelsrc));
+				Transform* tranform = new Transform();
+				object->AddProperty<Transform>(tranform);
+				scene->AddObject(object);
+			}
+
+			ImGuiFileDialog::Instance()->Close();
 		}
 
 		if (mRenameSceneModal || mRenameSceneObjectModal)

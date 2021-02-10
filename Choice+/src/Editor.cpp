@@ -20,14 +20,14 @@ namespace ChoicePlus
 	Editor::Editor()
 	{
 		mPipeline->Init();
-		mActiveScene = {};
+		mActiveProject = {};
 		//Temp
 		mCamera = std::make_unique<EditorCamera>();
 	}
 
 	Editor::~Editor()
 	{
-		delete mActiveScene;
+		delete mActiveProject;
 	}
 
 	void Editor::Draw()
@@ -74,56 +74,22 @@ namespace ChoicePlus
 		{
 			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("New Scene"))
-				{
-					mNewSceneModal = true;
-				}
-				if (ImGui::MenuItem("Save Scene"))
-				{
-					std::unique_ptr<SceneContainer> scenecontainer = std::make_unique<SceneContainer>();
-					std::string scenepath = "E:/Choice+/Choice+/assets/scenes" + mActiveScene->Name() + ".cpscene";
-					scenecontainer->ContainScene(mActiveScene, scenepath);
-				}
-				if (ImGui::MenuItem("Load Scene"))
-				{
-					ImGuiFileDialog::Instance()->SetExtentionInfos(".cpscene", ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
-					ImGuiFileDialog::Instance()->OpenModal("LoadScene", "Load Scene", ".cpscene", ".");
-				}
+				if (ImGui::MenuItem("New Project", "Ctrl + N")) { mNewProjectModal = true; }
+				if (ImGui::MenuItem("Save", "Ctrl + S")) { SaveProject(); }
+				if (ImGui::MenuItem("Open Project", "Ctrl + O")) { OpenProject(); }
 				ImGui::EndMenu();
 			}
 
 			ImGui::EndMenuBar();
 		}
 
+		if (Input::IsKeyPressed(GLFW_KEY_LEFT_CONTROL) && Input::IsKeyPressed(GLFW_KEY_N)) { mNewProjectModal = true; }
+		else if (Input::IsKeyPressed(GLFW_KEY_LEFT_CONTROL) && Input::IsKeyPressed(GLFW_KEY_S)) { SaveProject(); }
+		else if (Input::IsKeyPressed(GLFW_KEY_LEFT_CONTROL) && Input::IsKeyPressed(GLFW_KEY_O)) { OpenProject(); }
+
 		if (!mViewportFullscreen)
 		{
-			if (mNewSceneModal)
-			{
-				ImGui::OpenPopup("Create New Scene");
-				ImVec2 center = viewport->GetCenter();
-				ImGui::SetNextWindowSize({ 333.0f, 97.0f }, ImGuiCond_Appearing);
-				ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, { 0.5f, 0.5f });
-				if (ImGui::BeginPopupModal("Create New Scene", NULL, ImGuiWindowFlags_NoResize))
-				{
-					ImGui::Text("Scene Name:");
-					ImGui::SameLine();
-					static char buf[32] = "";
-					ImGui::InputText("##SceneName", buf, 32);
-					ImGui::Separator();
-					if (ImGui::Button("Create") || Input::IsKeyPressed(GLFW_KEY_ENTER))
-					{
-						if (strlen(buf) == 0) { CONSOLE("Scene Name Can't Be Empty{e}"); }
-						else { delete mActiveScene; mActiveScene = new Scene(buf); }
-						mNewSceneModal = false;
-					}
-					ImGui::SameLine();
-					if (ImGui::Button("Cancel") || Input::IsKeyPressed(GLFW_KEY_ESCAPE))
-					{
-						mNewSceneModal = false;
-					}
-					ImGui::EndPopup();
-				}
-			}
+			if (mNewProjectModal) { NewProject(); }
 
 			ImGui::SetNextWindowDockID(mDockIds.root, ImGuiCond_Appearing);
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
@@ -145,10 +111,10 @@ namespace ChoicePlus
 			ImGui::End();
 			ImGui::PopStyleVar();
 
-			ImGui::SetNextWindowDockID(mDockIds.bottom, ImGuiCond_Appearing);
-			mProjectExplorer->Draw();
 			ImGui::SetNextWindowDockID(mDockIds.left, ImGuiCond_Appearing);
-			mSceneHiearchyPanel->Draw(mActiveScene);
+			mProjectExplorer->Draw(mActiveProject);
+			ImGui::SetNextWindowDockID(mDockIds.left, ImGuiCond_Appearing);
+			mSceneHiearchyPanel->Draw(mProjectExplorer->ActiveScene());
 			ImGui::SetNextWindowDockID(mDockIds.right, ImGuiCond_Appearing);
 			mSceneInspector->Draw(mSceneHiearchyPanel->SelectedObject());
 		}
@@ -189,10 +155,7 @@ namespace ChoicePlus
 	void Editor::Update()
 	{
 		mCamera->Update();
-		if (mActiveScene)
-		{
-			mPipeline->Update(mActiveScene, mCamera->CameraData());
-		}
+		if (mProjectExplorer->ActiveScene()) { mPipeline->Update(mProjectExplorer->ActiveScene(), mCamera->CameraData()); }
 	}
 
 	void Editor::SetEditorLayout()
@@ -214,12 +177,88 @@ namespace ChoicePlus
 				0.3f, NULL, &mDockIds.root);
 
 			ImGui::DockBuilderDockWindow("Viewport", mDockIds.root);
-			ImGui::DockBuilderDockWindow("Project Explorer", mDockIds.bottom);
-			ImGui::DockBuilderDockWindow("Console", mDockIds.bottom);
-			ImGui::DockBuilderDockWindow("Scene Hierarchy", mDockIds.left);
-			ImGui::DockBuilderDockWindow("Scene Inspector", mDockIds.right);
+			ImGui::DockBuilderDockWindow(ICON_FK_FOLDER_OPEN_O, mDockIds.left);
+			ImGui::DockBuilderDockWindow(ICON_FK_TERMINAL, mDockIds.bottom);
+			ImGui::DockBuilderDockWindow(ICON_FK_LIST, mDockIds.left);
+			ImGui::DockBuilderDockWindow(ICON_FK_INFO_CIRCLE, mDockIds.right);
 			ImGui::DockBuilderFinish(mDockIds.root);
 		}
+	}
+
+	void Editor::NewProject()
+	{
+		ImGui::OpenPopup("Create New Project");
+		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+		ImGui::SetNextWindowSize({ 333.0f, 130.0f }, ImGuiCond_Appearing);
+		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, { 0.5f, 0.5f });
+		if (ImGui::BeginPopupModal("Create New Project", NULL, ImGuiWindowFlags_NoResize))
+		{
+			ImGui::Text("Name :");
+			ImGui::SameLine();
+			static char buf[32] = "";
+			static std::string dirbuf;
+			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvailWidth());
+			ImGui::InputText("##Name", buf, 32);
+			if (ImGui::BeginTable("##Directory", 3, ImGuiTableFlags_SizingFixedFit))
+			{
+				for (int row = 0; row < 1; row++)
+				{
+					ImGui::TableNextRow();
+					ImGui::TableSetColumnIndex(0);
+					ImGui::Text("Folder :");
+					ImGui::TableSetColumnIndex(1);
+					ImGui::SetNextItemWidth(225.0f);
+					ImGui::InputText("##Directory", dirbuf.data(), 256);
+					ImGui::TableSetColumnIndex(2);
+					if (ImGui::Button("..."))
+					{
+						ImGuiFileDialog::Instance()->OpenModal("ChooseDirectory", "Choose Directory", nullptr, "");
+					}
+				}
+				ImGui::EndTable();
+			}
+			if (ImGuiFileDialog::Instance()->Display("ChooseDirectory", ImGuiWindowFlags_NoCollapse, { 800, 600 }))
+			{
+				if (ImGuiFileDialog::Instance()->IsOk())
+				{
+					dirbuf = ImGuiFileDialog::Instance()->GetCurrentPath();
+				}
+				ImGuiFileDialog::Instance()->Close();
+			}
+			ImGui::Separator();
+			if(ImGui::Button("Create") || Input::IsKeyPressed(GLFW_KEY_ENTER))
+			{
+				if (strlen(buf) == 0) { CONSOLE("Project Name Can't Be Empty{e}"); }
+				else if (dirbuf.size() == 0) { CONSOLE("No Directory Selected{e}"); }
+				else { delete mActiveProject; mActiveProject = new Project(buf, dirbuf); }
+				mNewProjectModal = false;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Cancel") || Input::IsKeyPressed(GLFW_KEY_ESCAPE))
+			{
+				mNewProjectModal = false;
+			}
+			ImGui::EndPopup();
+		}
+	}
+
+	void Editor::SaveProject()
+	{
+		std::ofstream projfile(mActiveProject->Directory() + mActiveProject->Name() + ".cpproj", std::ios::out | std::ios::binary);
+		cpassert(!projfile.is_open() && projfile.bad());
+
+		for (auto& scenename : mActiveProject->SceneNames())
+		{
+			uint32_t scenenamesize = static_cast<uint32_t>(scenename.size());
+			projfile.write((char*)&scenenamesize, sizeof(scenenamesize));
+			projfile.write((char*)scenename.data(), scenenamesize);
+		}
+
+		projfile.close();
+	}
+
+	void Editor::OpenProject()
+	{
 	}
 
 }

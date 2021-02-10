@@ -54,8 +54,6 @@ namespace ChoicePlus
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-
-		FileDialogsModal();
 	}
 
 	void Gui::End()
@@ -69,36 +67,6 @@ namespace ChoicePlus
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
 			glfwMakeContextCurrent(backup_current_context);
-		}
-	}
-
-	void Gui::FileDialogsModal()
-	{
-		if (ImGuiFileDialog::Instance()->Display("ImportModel", ImGuiWindowFlags_NoCollapse, ImVec2(800, 600)))
-		{
-			if (ImGuiFileDialog::Instance()->IsOk())
-			{
-				std::string dumpedmodelsrc = DumpModel(ImGuiFileDialog::Instance()->GetFilePathName(), "E:/Choice+/Choice+/assets/models/");
-
-				SceneObject* object = new SceneObject();
-				object->AddProperty<Model>(Load(dumpedmodelsrc));
-				Transform* tranform = new Transform();
-				object->AddProperty<Transform>(tranform);
-				Application::Get()->GetEditor()->ActiveScene()->AddObject(object);
-			}
-
-			ImGuiFileDialog::Instance()->Close();
-		}
-
-		if (ImGuiFileDialog::Instance()->Display("LoadScene", ImGuiWindowFlags_NoCollapse, ImVec2(800, 600)))
-		{
-			if (ImGuiFileDialog::Instance()->IsOk())
-			{
-				std::unique_ptr<SceneContainer> scenecontainer = std::make_unique<SceneContainer>();
-				Application::Get()->GetEditor()->ActiveScene(scenecontainer->LoadContainedScene(ImGuiFileDialog::Instance()->GetFilePathName()));
-			}
-
-			ImGuiFileDialog::Instance()->Close();
 		}
 	}
 

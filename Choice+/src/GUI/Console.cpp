@@ -46,7 +46,7 @@ namespace ChoicePlus
 
 	void Console::Draw()
 	{
-		ImGui::Begin(ICON_FK_TERMINAL " Console", &mOpen, mFlags);
+		ImGui::Begin(ICON_FK_TERMINAL, &mOpen, mFlags);
 		if (ImGui::Button("Clear", ImVec2(45.0f, 25.0f)))Clear();
 		ImGui::Separator();
 
