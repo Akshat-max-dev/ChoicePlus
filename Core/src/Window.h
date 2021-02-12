@@ -12,6 +12,7 @@ namespace ChoicePlus
 		GLFWwindow* GetNativeWindow() { return mWindow; }
 		const uint32_t GetHeight()const { return mHeight; }
 		const uint32_t GetWidth()const { return mWidth; }
+		void ChangeTitle(const std::string& title) { glfwSetWindowTitle(mWindow, title.c_str()); }
 	private:
 		std::string mTitle;
 		uint32_t mWidth, mHeight;
