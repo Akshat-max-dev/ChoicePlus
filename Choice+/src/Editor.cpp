@@ -72,7 +72,7 @@ namespace ChoicePlus
 			{
 				if (ImGui::MenuItem("New Project", "Ctrl + N")) { mNewProjectModal = true; }
 				if (ImGui::MenuItem("Save", "Ctrl + S")) { SaveProject(); }
-				if (ImGui::MenuItem("Open Project", "Ctrl + O")) { OpenProject(); }
+				if (ImGui::MenuItem("Open Project", "Ctrl + O")) { mOpenProjectDialog = true; }
 				ImGui::EndMenu();
 			}
 
@@ -81,11 +81,12 @@ namespace ChoicePlus
 
 		if (Input::IsKeyPressed(GLFW_KEY_LEFT_CONTROL) && Input::IsKeyPressed(GLFW_KEY_N)) { mNewProjectModal = true; }
 		else if (Input::IsKeyPressed(GLFW_KEY_LEFT_CONTROL) && Input::IsKeyPressed(GLFW_KEY_S)) { SaveProject(); }
-		else if (Input::IsKeyPressed(GLFW_KEY_LEFT_CONTROL) && Input::IsKeyPressed(GLFW_KEY_O)) { OpenProject(); }
+		else if (Input::IsKeyPressed(GLFW_KEY_LEFT_CONTROL) && Input::IsKeyPressed(GLFW_KEY_O)) { mOpenProjectDialog = true; }
 
 		if (!mViewportFullscreen)
 		{
 			if (mNewProjectModal) { NewProject(); }
+			if (mOpenProjectDialog) { OpenProject(); }
 
 			ImGui::SetNextWindowDockID(mDockIds.root, ImGuiCond_Appearing);
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
@@ -226,7 +227,7 @@ namespace ChoicePlus
 			{
 				if (strlen(buf) == 0) { CONSOLE("Project Name Can't Be Empty{e}"); }
 				else if (dirbuf.size() == 0) { CONSOLE("No Directory Selected{e}"); }
-				else { delete mActiveProject; mActiveProject = new Project(buf, dirbuf); }
+				else { delete mActiveProject; mActiveProject = new Project(buf, dirbuf); Application::Get()->GetWindow()->ChangeTitle("Choice+ | " + mActiveProject->Name() + " |"); }
 				mNewProjectModal = false;
 			}
 			ImGui::SameLine();
@@ -240,21 +241,57 @@ namespace ChoicePlus
 
 	void Editor::SaveProject()
 	{
-		std::ofstream projfile(mActiveProject->Directory() + mActiveProject->Name() + ".cpproj", std::ios::out | std::ios::binary);
-		cpassert(!projfile.is_open() && projfile.bad());
-
-		for (auto& scenename : mActiveProject->SceneNames())
+		if (mActiveProject)
 		{
-			uint32_t scenenamesize = static_cast<uint32_t>(scenename.size());
-			projfile.write((char*)&scenenamesize, sizeof(scenenamesize));
-			projfile.write((char*)scenename.data(), scenenamesize);
-		}
+			std::ofstream projfile(mActiveProject->Directory() + mActiveProject->Name() + ".cpproj", std::ios::out | std::ios::binary);
+			cpassert(!projfile.is_open() && projfile.bad());
 
-		projfile.close();
+			uint32_t numberofscenes = (uint32_t)mActiveProject->SceneNames().size();
+			projfile.write((char*)&numberofscenes, sizeof(numberofscenes));
+
+			uint32_t activescenenamesize = (uint32_t)mProjectExplorer->ActiveScene()->Name().size();
+			projfile.write((char*)&activescenenamesize, sizeof(activescenenamesize));
+			projfile.write((char*)mProjectExplorer->ActiveScene()->Name().data(), activescenenamesize);
+
+			for (auto& scenename : mActiveProject->SceneNames())
+			{
+				uint32_t scenenamesize = static_cast<uint32_t>(scenename.size());
+				projfile.write((char*)&scenenamesize, sizeof(scenenamesize));
+				projfile.write((char*)scenename.data(), scenenamesize);
+			}
+
+			projfile.close();
+
+			if (mProjectExplorer->ActiveScene())
+			{
+				std::unique_ptr<SceneContainer> scenecontainer = std::make_unique<SceneContainer>();
+				scenecontainer->ContainScene(mProjectExplorer->ActiveScene(), mProjectExplorer->ActiveScene()->Directory());
+			}
+		}
 	}
 
 	void Editor::OpenProject()
 	{
+		ImGuiFileDialog::Instance()->SetExtentionInfos(".cpproj", { 1.0f, 0.0f, 0.0f, 1.0f });
+		ImGuiFileDialog::Instance()->OpenModal("OpenProject", "Open Project", ".cpproj", "");
+
+		if (ImGuiFileDialog::Instance()->Display("OpenProject", ImGuiWindowFlags_NoCollapse, { 800, 600 }))
+		{
+			if (ImGuiFileDialog::Instance()->IsOk())
+			{
+				std::string projfilelocation = ImGuiFileDialog::Instance()->GetFilePathName();
+				delete mActiveProject;
+				mActiveProject = new Project(projfilelocation);
+				Application::Get()->GetWindow()->ChangeTitle("Choice+ | " + mActiveProject->Name() + " |");
+				
+				std::unique_ptr<SceneContainer> scenecontainer = std::make_unique<SceneContainer>();
+				std::string loadscene = mActiveProject->Directory() + mActiveProject->ActiveScene() + "\\" + mActiveProject->ActiveScene() + ".cpscene";
+				mProjectExplorer->ActiveScene(scenecontainer->LoadContainedScene(loadscene));
+
+				mOpenProjectDialog = false;
+			}
+			ImGuiFileDialog::Instance()->Close();
+		}
 	}
 
 }

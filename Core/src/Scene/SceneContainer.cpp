@@ -24,31 +24,41 @@ namespace ChoicePlus
 			uint32_t proptypesize;
 			std::string proptype;
 
-			auto modelprop = object->GetProperty<Model>();
-			if (modelprop)
+			if (object)
 			{
-				proptype = "Model";
-				proptypesize = (uint32_t)proptype.size();
-				container.write((char*)&proptypesize, sizeof(proptypesize));
-				container.write((char*)proptype.data(), proptypesize);
+				auto modelprop = object->GetProperty<Model>();
+				if (modelprop)
+				{
+					proptype = "Model";
+					proptypesize = (uint32_t)proptype.size();
+					container.write((char*)&proptypesize, sizeof(proptypesize));
+					container.write((char*)proptype.data(), proptypesize);
 
-				uint32_t srcfilesize = (uint32_t)modelprop->mSrcFile.size();
-				container.write((char*)&srcfilesize, sizeof(srcfilesize));
-				container.write((char*)modelprop->mSrcFile.data(), srcfilesize);
+					uint32_t srcfilesize = (uint32_t)modelprop->mSrcFile.size();
+					container.write((char*)&srcfilesize, sizeof(srcfilesize));
+					container.write((char*)modelprop->mSrcFile.data(), srcfilesize);
+				}
+
+				auto transformprop = object->GetProperty<Transform>();
+				if (transformprop)
+				{
+					proptype = "Transform";
+					proptypesize = (uint32_t)proptype.size();
+					container.write((char*)&proptypesize, sizeof(proptypesize));
+					container.write((char*)proptype.data(), proptypesize);
+
+					container << transformprop->Position.x << " " << transformprop->Position.y << " " << transformprop->Position.z << " ";
+					glm::vec3 rotation = glm::degrees(transformprop->Rotation);
+					container << rotation.x << " " << rotation.y << " " << rotation.z << " ";
+					container << transformprop->Scale.x << " " << transformprop->Scale.y << " " << transformprop->Scale.z;
+				}
 			}
-
-			auto transformprop = object->GetProperty<Transform>();
-			if (transformprop)
+			else
 			{
-				proptype = "Transform";
+				proptype = "Deleted";
 				proptypesize = (uint32_t)proptype.size();
 				container.write((char*)&proptypesize, sizeof(proptypesize));
 				container.write((char*)proptype.data(), proptypesize);
-
-				container << transformprop->Position.x << " " << transformprop->Position.y << " " << transformprop->Position.z << " ";
-				glm::vec3 rotation = glm::degrees(transformprop->Rotation);
-				container << rotation.x << " " << rotation.y << " " << rotation.z << " ";
-				container << transformprop->Scale.x << " " << transformprop->Scale.y << " " << transformprop->Scale.z;
 			}
 		}
 
@@ -90,9 +100,12 @@ namespace ChoicePlus
 		scene->mSceneObjects.resize(objectssize);
 		for (auto& object : scene->mSceneObjects)
 		{
-			object = new SceneObject();
-			
+			object = {};
 			std::string proptype = ReadPropertyType(containedscene);
+
+			if (proptype == "Deleted")continue;
+
+			object = new SceneObject();
 
 			if (proptype == "Model")
 			{

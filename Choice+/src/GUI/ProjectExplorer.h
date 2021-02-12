@@ -13,6 +13,7 @@ namespace ChoicePlus
 		~ProjectExplorer();
 		void Draw(Project* project);
 		Scene* ActiveScene() { return mActiveScene; }
+		void ActiveScene(Scene* scene) { delete mActiveScene; mActiveScene = scene; }
 	private:
 		void IterateDirectory(const std::string& directory);
 	private:

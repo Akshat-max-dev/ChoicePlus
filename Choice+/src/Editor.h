@@ -67,5 +67,6 @@ namespace ChoicePlus
 		};
 		DockIds mDockIds;
 		bool mNewProjectModal = false;
+		bool mOpenProjectDialog = false;
 	};
 }

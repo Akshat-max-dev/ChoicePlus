@@ -68,6 +68,7 @@ namespace ChoicePlus
 							std::unique_ptr<SceneContainer> scenecontainer = std::make_unique<SceneContainer>();
 							std::string loadscene = project->Directory() + project->SceneNames()[0] + "\\" + project->SceneNames()[0] + ".cpscene";
 							mActiveScene = scenecontainer->LoadContainedScene(loadscene);
+							project->ActiveScene(mActiveScene->Name());
 						}
 					}
 					mNewSceneModal = false;
